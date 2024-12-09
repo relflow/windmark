@@ -4,7 +4,7 @@ import math
 import os
 from collections import OrderedDict
 from functools import partial, partialmethod
-from typing import Annotated
+from typing import Annotated, Optional
 
 import lightning.pytorch as lit
 import torch
@@ -642,19 +642,18 @@ class SequenceModule(lit.LightningModule):
     SequenceModule is a PyTorch Lightning module that represents a sequence model for encoding and decoding sequences of events and fields.
 
     Args:
-        datapath (str): The path to the data.
         params (Hyperparameters): The hyperparameters for the model.
         manager (SystemManager): The system manager for the model.
         mode (str): The mode of operation for the model. Can be one of "pretrain", "finetune", or "inference".
+        datapath (Optional[str]): The path to the data.
     """
 
-    def __init__(self, datapath: str, params: Hyperparameters, manager: SystemManager, mode: str):
+    def __init__(self, params: Hyperparameters, manager: SystemManager, mode: str, datapath: Optional[str] = None):
         super().__init__()
 
         assert mode in ["pretrain", "finetune", "inference"]
 
-        assert os.path.exists(datapath)
-        self.datapath: str = datapath
+        self.datapath: Optional[str] = datapath
 
         assert isinstance(params, Hyperparameters)
         self.params: Hyperparameters = params
@@ -674,13 +673,23 @@ class SequenceModule(lit.LightningModule):
         self.metrics = create_metrics(manager=manager)
         self.register_buffer("weights", torch.tensor(manager.task.balancer.weights))
 
-        self.dataloaders: dict[str, DataLoader] = {}
-        self.pipes: dict[str, Shuffle | SequenceDataset] = {}
+        if self.datapath is not None:
+            self.dataloaders: dict[str, DataLoader] = {}
+            self.pipes: dict[str, Shuffle | SequenceDataset] = {}
+
+            assert os.path.exists(datapath)
 
         self.info = partial(self.log, on_step=False, on_epoch=True, batch_size=self.params.batch_size)
 
         self.example_input_array = mock(params=params, manager=manager)
         self.flops_per_batch = measure_flops(self, lambda: self.forward(self.example_input_array))
+
+        self.mapping = dict(
+            fit=["train", "validate"],
+            validate=["validate"],
+            test=["test"],
+            predict=["predict"],
+        )
 
     @jaxtyped(typechecker=beartype)
     def forward(self, inputs: TensorDict) -> OutputData:
@@ -747,19 +756,14 @@ class SequenceModule(lit.LightningModule):
 
         Raises:
             AssertionError: If the stage is not one of the allowed values.
-
         """
+
+        if self.datapath is None:
+            return
 
         assert stage in ["fit", "validate", "test", "predict"]
 
-        mapping = dict(
-            fit=["train", "validate"],
-            validate=["validate"],
-            test=["test"],
-            predict=["predict"],
-        )
-
-        for strata in mapping[stage]:
+        for strata in self.mapping[stage]:
             split = strata if strata != "predict" else "test"
 
             dataset = SequenceDataset(
@@ -783,16 +787,13 @@ class SequenceModule(lit.LightningModule):
             AssertionError: If an invalid stage is provided.
 
         """
+
         assert stage in ["fit", "validate", "test", "predict"]
 
-        mapping = dict(
-            fit=["train", "validate"],
-            validate=["validate"],
-            test=["test"],
-            predict=["predict"],
-        )
+        if self.datapath is None:
+            return
 
-        for strata in mapping[stage]:
+        for strata in self.mapping[stage]:
             del self.pipes[strata]
             del self.dataloaders[strata]
 

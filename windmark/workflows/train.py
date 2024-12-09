@@ -46,4 +46,6 @@ def train(
 
     predictions = lib.predict(checkpoint=finetuned, params=params, manager=system, lifestreams=lifestreams, label=label)
 
+    lib.stash(checkpoint=finetuned, manager=system, params=params, label=label)
+
     return predictions

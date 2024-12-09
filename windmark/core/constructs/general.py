@@ -5,9 +5,9 @@ import functools
 from collections import namedtuple
 from enum import IntEnum, Enum
 from typing import Annotated
-from dataclasses import dataclass
 
 import pydantic
+from pydantic.dataclasses import dataclass
 from pytdigest import TDigest
 
 
@@ -28,7 +28,10 @@ class Tokens(IntEnum):
     PRUNE = 4
 
 
-class FieldType(namedtuple("Field", ["name", "is_static"]), Enum):
+FieldInfo = namedtuple("FieldInfo", ["name", "is_static"])
+
+
+class FieldType(FieldInfo, Enum):
     """
     Represents the type of a field in a data structure.
 
@@ -145,7 +148,8 @@ class LevelSet:
             dict[str, int]: A dictionary mapping levels to their indices.
         """
         mapping = {level: index + len(Tokens) for index, level in enumerate(self.levels)}
-        mapping[None] = int(Tokens.UNK)
+
+        mapping.update({None: Tokens.UNK, "[UNK]": Tokens.UNK})
 
         return mapping
 
@@ -176,7 +180,7 @@ class Centroid:
         return cls(name=name, array=array)
 
 
-@pydantic.dataclasses.dataclass
+@dataclass
 class Hyperparameters:
     """Hyperparameters class for defining the model's configuration."""
 

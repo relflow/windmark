@@ -6,7 +6,8 @@ readme = "docs/README.md"
 requires-python = ">=3.11"
 dependencies = [
     "flytekit==1.14.0b6",
-    "torch==2.3.0", # torch>=2.4.0 has a GPU memory leak ?
+    "torch==2.3.0",
+    # torch>=2.4.0 has a GPU memory leak ?
     "lightning>=2.1.3",
     "tensordict>=0.3.0",
     "jaxtyping>=0.2.25",
@@ -24,6 +25,9 @@ dependencies = [
     "rich>=13.7.0",
     "textual>=0.72.0",
     "wandb>=0.18.3",
+    "litserve>=0.2.5",
+    "valkey[libvalkey]>=6.0.2",
+    "aiohttp>=3.11.7",
 ]
 
 [tool.setuptools]

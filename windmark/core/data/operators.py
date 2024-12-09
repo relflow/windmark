@@ -22,16 +22,16 @@ AnnotationType: TypeAlias = tuple[str, str, int]
 FieldType: TypeAlias = dict[str, list[Any] | Any]
 
 
-def tensorfield(
-    observation: tuple[AnnotationType, FieldType],
+def transform(
+    fields: FieldType,
     params: Hyperparameters,
     manager: SystemManager,
-) -> tuple[AnnotationType, TensorDict]:
+) -> TensorDict:
     """
     Convert the fields in the observation into tensors using the specified parameters and manager.
 
     Args:
-        observation (tuple[AnnotationType, FieldType]): The observation containing annotations and fields.
+        observation (FieldType): The observation containing annotations and fields.
         params (Hyperparameters): The hyperparameters to be used for tensor conversion.
         manager (SystemManager): The system manager for accessing the schema.
 
@@ -39,7 +39,6 @@ def tensorfield(
         tuple[AnnotationType, TensorDict]: The converted annotations and tensor dictionary.
 
     """
-    annotations, fields = observation
 
     output = {}
 
@@ -48,11 +47,12 @@ def tensorfield(
         tensorfield = FieldInterface.tensorfield(field)
         output[field.name] = tensorfield.new(values=values, field=field, params=params, manager=manager)
 
-    return annotations, TensorDict(output, batch_size=1)
+    return TensorDict(output, batch_size=1)
 
 
 def package(
-    observation: tuple[AnnotationType, TensorDict],
+    fields: TensorDict,
+    annotation: AnnotationType,
     params: Hyperparameters,
     manager: SystemManager,
     mode: str,
@@ -73,7 +73,7 @@ def package(
         AssertionError: If the mode is not one of "pretrain", "finetune", or "inference".
     """
 
-    (*meta, label), fields = observation
+    (*meta, label) = annotation
 
     assert mode in ("pretrain", "finetune", "inference")
 
@@ -170,9 +170,16 @@ class SequenceDataset(torch.utils.data.IterableDataset):
 
                 observations = self.sampler(sequence=sequence)
 
-                for observation in observations:
-                    tensorfields = tensorfield(observation, self.params, self.manager)
-                    yield package(tensorfields, self.params, self.manager, self.mode)
+                for annotation, fields in observations:
+                    tensorfields = transform(fields, self.params, self.manager)
+
+                    yield package(
+                        fields=tensorfields,
+                        annotation=annotation,
+                        params=self.params,
+                        manager=self.manager,
+                        mode=self.mode,
+                    )
 
 
 def collate(batch: list[SequenceData]) -> SequenceData:

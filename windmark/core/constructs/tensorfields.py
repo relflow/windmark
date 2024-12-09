@@ -165,7 +165,7 @@ class StaticCategoryField(TensorField):
 
         """
         mapping = manager.levelsets[field]
-        if values is None:
+        if (values is None) or (values == "[UNK]"):
             tokens = Tokens.UNK
         else:
             tokens = mapping[values]
@@ -279,7 +279,7 @@ class DynamicEntityField(TensorField):
 
         mapping = dict(zip(unique, integers))
 
-        mapping.update({None: Tokens.UNK})
+        mapping.update({None: Tokens.UNK, "[UNK]": Tokens.UNK})
 
         tokens = list(map(lambda value: mapping[value], values))
 

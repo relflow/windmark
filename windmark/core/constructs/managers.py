@@ -1,7 +1,6 @@
 # Copyright Grantham Taylor.
 
 import math
-import dataclasses
 import functools
 
 import numpy as np
@@ -10,10 +9,12 @@ from rich.table import Table
 from rich.panel import Panel
 from pytdigest import TDigest
 
-from windmark.core.constructs.general import Centroid, LevelSet, FieldRequest
+import pydantic
+from pydantic.dataclasses import dataclass
+from windmark.core.constructs.general import Centroid, LevelSet, FieldRequest, Hyperparameters
 
 
-@dataclasses.dataclass
+@dataclass
 class SchemaManager:
     """Manages the schema for Windmark data."""
 
@@ -60,6 +61,26 @@ class SchemaManager:
             target_id=target_id,
             fields=fields,
         )
+
+    def __getitem__(self, name: str) -> FieldRequest:
+        """
+        Get a field by name.
+
+        Args:
+            name: The name of the field.
+
+        Returns:
+            The field with the specified name.
+
+        Raises:
+            KeyError: If the field does not exist.
+        """
+
+        for field in self.fields:
+            if field.name == name:
+                return field
+
+        raise KeyError
 
     def __post_init__(self):
         """Perform additional initialization after the object has been created."""
@@ -108,7 +129,7 @@ class SchemaManager:
         return [field for field in self.fields if not field.is_static]
 
 
-@dataclasses.dataclass
+@dataclass
 class BalanceManager:
     """A class that manages the balance of class labels in a dataset."""
 
@@ -117,11 +138,11 @@ class BalanceManager:
     interpolation_rate: float
     unlabeled: int
 
-    total: int = dataclasses.field(init=False)
-    values: list[float] = dataclasses.field(init=False)
-    interpolation: list[float] = dataclasses.field(init=False)
-    thresholds: list[float] = dataclasses.field(init=False)
-    weights: list[float] = dataclasses.field(init=False)
+    total: int = pydantic.Field(init=False)
+    values: list[float] = pydantic.Field(init=False)
+    interpolation: list[float] = pydantic.Field(init=False)
+    thresholds: list[float] = pydantic.Field(init=False)
+    weights: list[float] = pydantic.Field(init=False)
 
     def __post_init__(self):
         """
@@ -212,7 +233,7 @@ class BalanceManager:
         return self.total + self.unlabeled
 
 
-@dataclasses.dataclass
+@dataclass
 class SupervisedTaskManager:
     """
     A manager class for supervised learning tasks.
@@ -231,7 +252,7 @@ class SupervisedTaskManager:
         assert self.n_targets > 1
 
 
-@dataclasses.dataclass
+@dataclass
 class SplitManager:
     """A class that manages the splits for a dataset."""
 
@@ -279,7 +300,7 @@ class SplitManager:
         return sum([self.train, self.validate, self.test])
 
 
-@dataclasses.dataclass
+@dataclass
 class SampleManager:
     """A class that manages the sampling rates for pretraining and finetuning in a machine learning task."""
 
@@ -359,7 +380,7 @@ class SampleManager:
         console.print(Panel.fit(renderables, title="Sample Managers"))
 
 
-@dataclasses.dataclass
+@dataclass
 class CentroidManager:
     """A class that manages centroids and provides methods to calculate digests and display information."""
 
@@ -425,18 +446,20 @@ class CentroidManager:
         return f"CentroidManager({[centroid.name for centroid in self.centroids]})"
 
 
-@dataclasses.dataclass
+@dataclass
 class LevelManager:
     """
     A class that manages levels and mappings for different fields.
     """
 
     levelsets: list[LevelSet | None]
-    mappings: dict[str, dict[str, int]] = dataclasses.field(init=False)
 
     def __post_init__(self):
-        levelsets = [levelset for levelset in self.levelsets if levelset is not None]
-        self.mappings = {levelset.name: levelset.mapping for levelset in levelsets}
+        self.levelsets = [levelset for levelset in self.levelsets if levelset is not None]
+
+    @functools.cached_property
+    def mappings(self) -> dict[str, dict[str, int]]:
+        return {levelset.name: levelset.mapping for levelset in self.levelsets}
 
     def __getitem__(self, field: FieldRequest) -> dict[str, int]:
         """
@@ -484,7 +507,7 @@ class LevelManager:
         return f"LevelManager({[name for name in self.mappings.keys()]})"
 
 
-@dataclasses.dataclass
+@dataclass
 class SystemManager:
     """The SystemManager class manages various components of the system."""
 
@@ -508,3 +531,11 @@ class SystemManager:
 
         for presenter in presenters:
             presenter.show()
+
+
+@dataclass
+class StashManager:
+    label: str
+    checkpoint: str
+    manager: SystemManager
+    params: Hyperparameters
