@@ -490,7 +490,7 @@ class LevelManager:
         for field, mapping in self.mappings.items():
             size: int = len(mapping) - 1
 
-            levels: list[str] = [level for level in list(mapping.keys())]
+            levels: list[str] = [level if level is not None else "[red]None[/]" for level in list(mapping.keys())]
 
             max_levels = 50
 

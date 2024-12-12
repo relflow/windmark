@@ -1,10 +1,12 @@
 # Copyright Grantham Taylor.
 
+from typing import TypeVar, Annotated
 import string
 import random
 import datetime
 from decimal import Decimal
 
+from pydantic import Field
 import numpy as np
 import torch
 from beartype import beartype
@@ -137,6 +139,23 @@ class DynamicCategoryField(TensorField):
         values = random.choices(levels, k=L)
 
         return cls.new(values=values, field=field, params=params, manager=manager)
+
+    @classmethod
+    def get_annotation(cls, manager: SystemManager, field: FieldRequest) -> TypeVar:
+        """
+        Gets the annotation for the dynamic category field.
+
+        Args:
+            manager (SystemManager): The system manager.
+            field (FieldRequest): The field request.
+
+        Returns:
+            TypeVar: The annotation for the dynamic category field.
+        """
+
+        choices = list(manager.levelsets[field].keys())
+
+        return Annotated[str, Field(description=f"Category from {field.name}", choices=choices)]
 
 
 @FieldInterface.register(FieldType.Category)
@@ -329,6 +348,21 @@ class DynamicEntityField(TensorField):
 
         return cls.new(values=values, field=field, params=params, manager=manager)
 
+    @classmethod
+    def get_annotation(cls, manager: SystemManager, field: FieldRequest) -> TypeVar:
+        """
+        Gets the annotation for the dynamic entity field.
+
+        Args:
+            manager (SystemManager): The system manager.
+            field (FieldRequest): The field request.
+
+        Returns:
+            TypeVar: The annotation for the dynamic entity field.
+        """
+
+        return Annotated[str, Field(description=f"Entity from {field.name}")]
+
 
 @FieldInterface.register(FieldType.Numbers)
 @tensorclass
@@ -403,6 +437,21 @@ class DynamicNumberField(TensorField):
         values = [random.uniform(-100, 100) for _ in range(L)]
 
         return cls.new(values=values, field=field, params=params, manager=manager)
+
+    @classmethod
+    def get_annotation(cls, manager: SystemManager, field: FieldRequest) -> TypeVar:
+        """
+        Gets the annotation for the dynamic number field.
+
+        Args:
+            manager (SystemManager): The system manager.
+            field (FieldRequest): The field request.
+
+        Returns:
+            TypeVar: The annotation for the dynamic number field.
+        """
+
+        return Annotated[float | int, Field(description=f"Number from {field.name}")]
 
 
 @FieldInterface.register(FieldType.Number)
@@ -551,6 +600,21 @@ class DynamicQuantileField(TensorField):
     postprocess = DynamicNumberField.postprocess
     mock = DynamicNumberField.mock
 
+    @classmethod
+    def get_annotation(cls, manager: SystemManager, field: FieldRequest) -> TypeVar:
+        """
+        Gets the annotation for the dynamic quantile field.
+
+        Args:
+            manager (SystemManager): The system manager.
+            field (FieldRequest): The field request.
+
+        Returns:
+            TypeVar: The annotation for the dynamic quantile field.
+        """
+
+        return Annotated[float | int, Field(description=f"Quantile from {field.name}")]
+
 
 @FieldInterface.register(FieldType.Quantile)
 @tensorclass
@@ -675,3 +739,18 @@ class DynamicTemporalField(TensorField):
         values = [start_date + datetime.timedelta(seconds=random.randint(0, delta_seconds)) for _ in range(L)]
 
         return cls.new(values=values, field=field, params=params, manager=manager)
+
+    @classmethod
+    def get_annotation(cls, manager: SystemManager, field: FieldRequest) -> TypeVar:
+        """
+        Gets the annotation for the dynamic temporal field.
+
+        Args:
+            manager (SystemManager): The system manager.
+            field (FieldRequest): The field request.
+
+        Returns:
+            TypeVar: The annotation for the dynamic temporal field.
+        """
+
+        return Annotated[str, Field(description=f"Temporal from {field.name}")]

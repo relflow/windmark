@@ -75,6 +75,8 @@ async def main():
 
     finish = time.time()
 
+    print(f"Total Requests: {count}")
+    print(f"Total Time: {finish - start} seconds")
     print(f"Seconds / Request: {(finish - start) / count}")
 
 

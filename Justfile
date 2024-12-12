@@ -20,7 +20,7 @@ reset:
 
 # run model explorer TUI
 explore:
-  @uv run -m windmark.dev.explorer
+  @uv run -m windmark.core.dev.explorer
 
 # clean up temporary files
 clean:

@@ -23,19 +23,19 @@ class LifestreamSampler:
     """
 
     def __init__(self) -> None:
-        config = Path(os.getcwd()) / "config"
+        config = Path(os.getcwd()) / "windmark" / "config"
         cwd = Path(os.path.realpath(__file__)).parent
 
         with initialize(version_base=None, config_path=os.path.relpath(config, cwd)):
             manifest = compose(config_name="config")["data"]
 
-        datapath = Path(manifest["path"])
+        datapath = Path(manifest.path)
 
         files = os.listdir(datapath)
 
         shards = [file for file in files if file.endswith("ndjson")]
 
-        self.schema = SchemaManager.new(**manifest["structure"], **manifest["fields"])
+        self.schema = SchemaManager.new(**manifest.structure)
         self.df = pl.read_ndjson(datapath / random.choice(shards)).sample(n=1)
 
     @property
@@ -63,7 +63,6 @@ class LifestreamSampler:
             tuple[list[str], list[tuple[str, ...]]]: A tuple containing the column names and rows of the static data.
         """
         static = self.df.select(
-            pl.col(self.schema.event_id).list.len().alias("_n_events"),
             cs.string(),
             cs.numeric(),
             cs.temporal(),

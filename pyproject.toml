@@ -5,7 +5,7 @@ description = "Multi-Structure Sequence Modeling"
 readme = "docs/README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "flytekit==1.14.0b6",
+    "flytekit>=1.14.0",
     "torch==2.3.0",
     # torch>=2.4.0 has a GPU memory leak ?
     "lightning>=2.1.3",
