@@ -12,7 +12,7 @@ from textual.binding import Binding
 from textual.containers import HorizontalScroll
 from textual.widgets import DataTable, TabbedContent, TabPane, Footer
 
-from windmark.core.constructs.managers import SchemaManager
+from windmark.core.constructs.managers import StructureManager
 
 
 class LifestreamSampler:
@@ -35,7 +35,7 @@ class LifestreamSampler:
 
         shards = [file for file in files if file.endswith("ndjson")]
 
-        self.schema = SchemaManager.new(**manifest.structure)
+        self = StructureManager.new(**manifest.structure)
         self.df = pl.read_ndjson(datapath / random.choice(shards)).sample(n=1)
 
     @property
@@ -47,7 +47,7 @@ class LifestreamSampler:
             tuple[list[str], list[tuple[str, ...]]]: A tuple containing the column names and rows of the dynamic data.
         """
         dynamic = (
-            self.df.select(self.schema.event_id, self.schema.target_id, *[field.name for field in self.schema.dynamic])
+            self.df.select(self.event_id, self.target_id, *[field.name for field in self.dynamic])
             .explode(pl.all())
             .select(pl.all().cast(pl.String))
         )

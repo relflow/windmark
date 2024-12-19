@@ -3,7 +3,7 @@
 from windmark.orchestration.environments import context
 from windmark.core.constructs.general import Centroid, LevelSet
 from windmark.core.constructs.managers import (
-    SchemaManager,
+    StructureManager,
     SupervisedTaskManager,
     SampleManager,
     SplitManager,
@@ -15,7 +15,7 @@ from windmark.core.constructs.managers import (
 
 @context.default
 def create_system_manager(
-    schema: SchemaManager,
+    schema: StructureManager,
     task: SupervisedTaskManager,
     sample: SampleManager,
     split: SplitManager,
@@ -26,7 +26,7 @@ def create_system_manager(
     Creates a system state manager to contain multiple child state managers.
 
     Args:
-        schema (SchemaManager): The schema manager object.
+        structure (StructureManager): The schema manager object.
         task (SupervisedTaskManager): The supervised task manager object.
         sample (SampleManager): The sample manager object.
         split (SplitManager): The split manager object.
@@ -37,12 +37,12 @@ def create_system_manager(
         SystemManager: The created system state manager.
     """
     manager = SystemManager(
-        schema=schema,
+        structure=schema,
         task=task,
         sample=sample,
         split=split,
-        centroids=CentroidManager(centroids),
-        levelsets=LevelManager(levelsets),
+        centroids=CentroidManager(centroids=centroids),
+        levelsets=LevelManager(levelsets=levelsets),
     )
 
     manager.show()

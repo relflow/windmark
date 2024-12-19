@@ -82,7 +82,7 @@ class ModularFieldEmbeddingSystem(torch.nn.Module):
 
         embedders: dict[str, torch.nn.Module] = {}
 
-        for field in manager.schema.fields:
+        for field in manager.structure.fields:
             embedder = FieldInterface.embedder(field)
             embedders[field.name] = embedder(params=params, manager=manager, field=field)
 
@@ -106,7 +106,7 @@ class ModularFieldEmbeddingSystem(torch.nn.Module):
         for field in self.embedders.keys():
             embedder = self.embedders[field]
             embedding = embedder(inputs[field])
-            if embedder.type.is_static:
+            if embedder.field.is_static:
                 static.append(embedding)
             else:
                 dynamic.append(embedding)
@@ -149,7 +149,7 @@ class DynamicFieldEncoder(torch.nn.Module):
 
         self.encoder = torch.nn.TransformerEncoder(layer, num_layers=params.n_layers_field_encoder)
 
-        self.positional = LearnedTensor(len(manager.schema.dynamic), params.d_field)
+        self.positional = LearnedTensor(len(manager.structure.dynamic), params.d_field)
 
     @jaxtyped(typechecker=beartype)
     def forward(self, dynamic: Float[torch.Tensor, "_N L Fd C"]) -> Float[torch.Tensor, "_N L FdC"]:
@@ -189,7 +189,7 @@ class EventEncoder(torch.nn.Module):
         super().__init__()
 
         layer = torch.nn.TransformerEncoderLayer(
-            d_model=len(manager.schema.dynamic) * params.d_field,
+            d_model=len(manager.structure.dynamic) * params.d_field,
             nhead=params.n_heads_event_encoder,
             batch_first=True,
             dropout=params.dropout,
@@ -198,8 +198,8 @@ class EventEncoder(torch.nn.Module):
 
         self.encoder = torch.nn.TransformerEncoder(layer, num_layers=params.n_layers_event_encoder)
 
-        Fd = len(manager.schema.dynamic)
-        Fs = len(manager.schema.static)
+        Fd = len(manager.structure.dynamic)
+        Fs = len(manager.structure.static)
 
         self.positional = LearnedTensor(1 + params.n_context + Fs, Fd * params.d_field)
         self.class_token = LearnedTensor(1, 1, Fd * params.d_field)
@@ -262,11 +262,11 @@ class EventDecoder(torch.nn.Module):
 
         projections = {}
 
-        for field in manager.schema.dynamic:
+        for field in manager.structure.dynamic:
             tensorfield = FieldInterface.tensorfield(field)
 
             projections[field.name] = torch.nn.Linear(
-                len(manager.schema.dynamic) * params.d_field * 2,
+                len(manager.structure.dynamic) * params.d_field * 2,
                 tensorfield.get_target_size(params=params, manager=manager, field=field),
             )
 
@@ -317,11 +317,11 @@ class StaticFieldDecoder(torch.nn.Module):
 
         projections = {}
 
-        for field in manager.schema.static:
+        for field in manager.structure.static:
             tensorfield = FieldInterface.tensorfield(field)
 
             projections[field.name] = torch.nn.Linear(
-                len(manager.schema.dynamic) * params.d_field * 2,
+                len(manager.structure.dynamic) * params.d_field * 2,
                 tensorfield.get_target_size(params=params, manager=manager, field=field),
             )
 
@@ -377,14 +377,14 @@ class DecisionHead(torch.nn.Module):
                 lambda x: params.head_shape_log_base**x,
                 range(
                     math.ceil(math.log(manager.task.n_targets, params.head_shape_log_base)),
-                    math.ceil(math.log(len(manager.schema.dynamic) * params.d_field, params.head_shape_log_base)),
+                    math.ceil(math.log(len(manager.structure.dynamic) * params.d_field, params.head_shape_log_base)),
                 ),
             )
         )
 
         hidden.reverse()
 
-        dims = [len(manager.schema.dynamic) * params.d_field, *hidden, manager.task.n_targets]
+        dims = [len(manager.structure.dynamic) * params.d_field, *hidden, manager.task.n_targets]
 
         layers = []
 
@@ -479,7 +479,7 @@ def pretrain(
     dynamic_losses = []
     static_losses = []
 
-    for field in module.manager.schema.dynamic:
+    for field in module.manager.structure.dynamic:
         values: torch.Tensor = output.decoded_events[field.name]
         targets: TargetField = batch.targets[field.name]
 
@@ -504,7 +504,7 @@ def pretrain(
 
     scalar = (module.params.d_field * module.params.p_mask_static) / (module.params.n_context * p_mask_dynamic)
 
-    for field in module.manager.schema.static:
+    for field in module.manager.structure.static:
         values: torch.Tensor = output.decoded_static_fields[field.name]
         targets: TargetField = batch.targets[field.name]
 
@@ -524,7 +524,7 @@ def pretrain(
     dynamic_loss = torch.stack(dynamic_losses).sum()
     module.info(f"pretrain-total-{strata}/dynamic", dynamic_loss)
 
-    if len(module.manager.schema.static) > 0:
+    if len(module.manager.structure.static) > 0:
         static_loss = torch.stack(static_losses).sum()
         module.info(f"pretrain-total-{strata}/static", static_loss)
     else:

@@ -1,13 +1,10 @@
 # Copyright Grantham Taylor.
 
-import re
 import functools
-from collections import namedtuple
-from enum import IntEnum, Enum
+from enum import IntEnum, StrEnum
 from typing import Annotated
 
 import pydantic
-from pydantic.dataclasses import dataclass
 from pytdigest import TDigest
 
 
@@ -16,22 +13,14 @@ class Tokens(IntEnum):
     Enum class representing different types of tokens.
     """
 
-    # Value token.
-    VAL = 0
-    # Unknown token.
-    UNK = 1
-    # Padding token.
-    PAD = 2
-    # Mask token.
-    MASK = 3
-    # Prune token.
-    PRUNE = 4
+    VAL = 0  # Value token.
+    UNK = 1  # Unknown token.
+    PAD = 2  # Padding token.
+    MASK = 3  # Mask token.
+    PRUNE = 4  # Prune token.
 
 
-FieldInfo = namedtuple("FieldInfo", ["name", "is_static"])
-
-
-class FieldType(FieldInfo, Enum):
+class FieldType(StrEnum):
     """
     Represents the type of a field in a data structure.
 
@@ -40,89 +29,37 @@ class FieldType(FieldInfo, Enum):
     """
 
     # dynamic
-    Numbers = ("Numbers", False)
-    Categories = ("Categories", False)
-    Timestamps = ("Timestamps", False)
-    Quantiles = ("Quantiles", False)
-    Entities = ("Entities", False)
+    Numbers = "Numbers"
+    Categories = "Categories"
+    Timestamps = "Timestamps"
+    Quantiles = "Quantiles"
+    Entities = "Entities"
 
     # static
-    Number = ("Number", True)
-    Category = ("Category", True)
-    Timestamp = ("Timestamp", True)
-    Quantile = ("Quantile", True)
-
-    def __str__(self) -> str:
-        return self.name
+    Number = "Number"
+    Category = "Category"
+    Timestamp = "Timestamp"
+    Quantile = "Quantile"
 
 
-@dataclass
-class FieldRequest:
+class FieldRequest(pydantic.BaseModel):
     """
     Represents a field request object.
     """
 
     name: str
-    fieldtype: str
-
-    # TODO I could probably clean this up
-    @classmethod
-    def new(cls, name: str, fieldtype: FieldType | str) -> "FieldRequest":
-        """
-        Creates a new FieldRequest object.
-
-        Args:
-            name (str): The name of the field.
-            fieldtype (FieldType | str): The type of the field.
-
-        Returns:
-            FieldRequest: The created FieldRequest object.
-
-        Raises:
-            KeyError: If the fieldtype is not a valid field type.
-            AssertionError: If the field name is invalid.
-        """
-        if isinstance(fieldtype, str):
-            # check if valid field type
-            if fieldtype.capitalize() in FieldType._member_names_:
-                fieldtype: FieldType = FieldType[fieldtype.capitalize()]
-            else:
-                raise KeyError
-
-        return cls(name=name, fieldtype=str(fieldtype))
-
-    def __post_init__(self):
-        """
-        Checks if the field name is valid.
-
-        Raises:
-            AssertionError: If the field name is invalid.
-        """
-        assert re.match(r"^[a-z][a-z0-9_]*$", self.name), f"invalid field name {self.name}"
-
-    @functools.cached_property
-    def type(self) -> FieldType:
-        """
-        Returns the FieldType of the field.
-
-        Returns:
-            FieldType: The FieldType of the field.
-        """
-        return FieldType[self.fieldtype]
+    type: FieldType
 
     @functools.cached_property
     def is_static(self) -> bool:
         """
         Returns True if the field is static, False otherwise.
-
-        Returns:
-            bool: True if the field is static, False otherwise.
         """
-        return FieldType[self.fieldtype].is_static
+
+        return not self.type.name.endswith("s")
 
 
-@dataclass
-class LevelSet:
+class LevelSet(pydantic.BaseModel):
     """
     Represents a set of levels.
     """
@@ -154,8 +91,7 @@ class LevelSet:
         return mapping
 
 
-@dataclass
-class Centroid:
+class Centroid(pydantic.BaseModel):
     """
     Represents a centroid with a name, an array of floats, and a validity flag.
     """
@@ -180,8 +116,7 @@ class Centroid:
         return cls(name=name, array=array)
 
 
-@dataclass
-class Hyperparameters:
+class Hyperparameters(pydantic.BaseModel):
     """Hyperparameters class for defining the model's configuration."""
 
     # architectural

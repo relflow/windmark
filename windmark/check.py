@@ -13,7 +13,7 @@ with open("stash/alison-island.json", "r") as file:
 
 annotations: dict[str, TypeVar] = {}
 
-for field in stash.manager.schema.fields:
+for field in stash.manager.structure.fields:
     tensorfield = FieldInterface.tensorfield(field)
     annotations[field.name] = tensorfield.get_annotation(manager=stash.manager, field=field)
 

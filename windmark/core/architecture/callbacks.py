@@ -66,8 +66,8 @@ class ParquetBatchWriter(callbacks.BasePredictionWriter):
                 pl.col("representations"),
                 pl.col("predictions"),
                 pl.col("targets"),
-                pl.col("meta").list.first().alias(pl_module.manager.schema.sequence_id),
-                pl.col("meta").list.last().alias(pl_module.manager.schema.event_id),
+                pl.col("meta").list.first().alias(pl_module.manager.structure.sequence_id),
+                pl.col("meta").list.last().alias(pl_module.manager.structure.event_id),
             )
             .to_arrow()
         )

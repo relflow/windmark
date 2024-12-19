@@ -10,12 +10,10 @@ from rich.panel import Panel
 from pytdigest import TDigest
 
 import pydantic
-from pydantic.dataclasses import dataclass
 from windmark.core.constructs.general import Centroid, LevelSet, FieldRequest, Hyperparameters
 
 
-@dataclass
-class SchemaManager:
+class StructureManager(pydantic.BaseModel):
     """Manages the schema for Windmark data."""
 
     sequence_id: str
@@ -23,44 +21,6 @@ class SchemaManager:
     split_id: str
     target_id: str
     fields: list[FieldRequest]
-
-    # TODO I could probably clean this up
-    @classmethod
-    def new(
-        cls,
-        sequence_id: str,
-        event_id: str,
-        split_id: str,
-        target_id: str,
-        fields: dict[str, str],
-    ) -> "SchemaManager":
-        """
-        Create a new instance of SchemaManager.
-
-        Args:
-            cls: The class object.
-            sequence_id: The sequence ID.
-            event_id: The event ID.
-            split_id: The split ID.
-            target_id: The target ID.
-            fields: The fields of the schema.
-
-        Returns:
-            An instance of SchemaManager.
-
-        Raises:
-            ValueError: If no dynamic fields are included.
-
-        """
-        fields: list[FieldRequest] = [FieldRequest.new(name, field) for name, field in fields.items()]
-
-        return cls(
-            sequence_id=sequence_id,
-            event_id=event_id,
-            split_id=split_id,
-            target_id=target_id,
-            fields=fields,
-        )
 
     def __getitem__(self, name: str) -> FieldRequest:
         """
@@ -82,10 +42,10 @@ class SchemaManager:
 
         raise KeyError
 
-    def __post_init__(self):
+    def model_post_init(self, *args, **kwargs):
         """Perform additional initialization after the object has been created."""
 
-        if len([field for field in self.fields if not field.type.is_static]) < 1:
+        if len([field for field in self.fields if not field.is_static]) < 1:
             raise ValueError("include at least one dynamic field")
 
         assert len(self.fields) > 1, "must pass in at least two fields"
@@ -129,8 +89,7 @@ class SchemaManager:
         return [field for field in self.fields if not field.is_static]
 
 
-@dataclass
-class BalanceManager:
+class BalanceManager(pydantic.BaseModel):
     """A class that manages the balance of class labels in a dataset."""
 
     labels: list[str]
@@ -138,13 +97,8 @@ class BalanceManager:
     interpolation_rate: float
     unlabeled: int
 
-    total: int = pydantic.Field(init=False)
-    values: list[float] = pydantic.Field(init=False)
-    interpolation: list[float] = pydantic.Field(init=False)
-    thresholds: list[float] = pydantic.Field(init=False)
-    weights: list[float] = pydantic.Field(init=False)
-
-    def __post_init__(self):
+    @functools.cached_property
+    def cache(self) -> dict[str, int | list[float]]:
         """
         Initializes the class and calculates the necessary attributes.
         """
@@ -156,25 +110,73 @@ class BalanceManager:
         size: int = len(self.labels)
         null: float = 1 / size
 
-        self.total = sum(self.counts)
-        self.values = [count / self.total for count in self.counts]
+        # ADD
+        total = sum(self.counts)
 
-        assert math.isclose(sum(self.values), 1.0)
+        # ADD
+        values = [count / total for count in self.counts]
+
+        assert math.isclose(sum(values), 1.0)
 
         assert 0.0 <= self.interpolation_rate <= 1.0
 
-        self.interpolation = [
-            self.interpolation_rate * null + (1 - self.interpolation_rate) * value for value in self.values
-        ]
+        # ADD
+        interpolation = [self.interpolation_rate * null + (1 - self.interpolation_rate) * value for value in values]
 
-        assert math.isclose(sum(self.interpolation), 1.0)
+        assert math.isclose(sum(interpolation), 1.0)
 
-        ratio = [value / interpol for interpol, value in zip(self.values, self.interpolation)]
+        ratio = [value / interpol for interpol, value in zip(values, interpolation)]
 
-        self.thresholds: list[float] = list(map(lambda x: x / max(ratio), ratio))
+        # ADD
+        thresholds: list[float] = list(map(lambda x: x / max(ratio), ratio))
 
-        weights = list(map(lambda x: sum(ratio) / x, self.interpolation))
-        self.weights = list(map(lambda x: x / min(weights), weights))
+        weights = list(map(lambda x: sum(ratio) / x, interpolation))
+
+        # ADD
+        normalized = list(map(lambda x: x / min(weights), weights))
+
+        return dict(
+            total=total,
+            values=values,
+            interpolation=interpolation,
+            thresholds=thresholds,
+            weights=normalized,
+        )
+
+    @property
+    def total(self) -> int:
+        """
+        Returns the total number of events, including unlabeled instances.
+        """
+        return self.cache["total"]
+
+    @property
+    def values(self) -> list[float]:
+        """
+        Returns the population distribution of the class labels.
+        """
+        return self.cache["values"]
+
+    @property
+    def interpolation(self) -> list[float]:
+        """
+        Returns the sample rate for each class label.
+        """
+        return self.cache["interpolation"]
+
+    @property
+    def thresholds(self) -> list[float]:
+        """
+        Returns the modified distribution of the class labels.
+        """
+        return self.cache["thresholds"]
+
+    @property
+    def weights(self) -> list[float]:
+        """
+        Returns the loss weight for each class label.
+        """
+        return self.cache["weights"]
 
     def show(self):
         """
@@ -230,11 +232,10 @@ class BalanceManager:
         """
         Returns the total number of events, including unlabeled instances.
         """
-        return self.total + self.unlabeled
+        return sum(self.counts) + self.unlabeled
 
 
-@dataclass
-class SupervisedTaskManager:
+class SupervisedTaskManager(pydantic.BaseModel):
     """
     A manager class for supervised learning tasks.
 
@@ -247,45 +248,33 @@ class SupervisedTaskManager:
     n_targets: int
     balancer: BalanceManager
 
-    def __post_init__(self):
+    def model_post_init(self, *args, **kwargs):
         assert self.task in ["classification", "regression"]
         assert self.n_targets > 1
 
 
-@dataclass
-class SplitManager:
+class SplitManager(pydantic.BaseModel):
     """A class that manages the splits for a dataset."""
 
-    train: int
-    validate: int
-    test: int
-
-    def __post_init__(self):
-        """
-        Perform additional initialization after the object is created.
-
-        This method is automatically called by the `dataclasses` module after the object is created.
-        It can be used to perform any additional initialization steps that are required.
-        """
-
-        for split in [self.train, self.validate, self.test]:
-            assert isinstance(split, int)
+    training: int
+    validating: int
+    testing: int
 
     def __getitem__(self, split: str) -> float:
         """
         Get the proportion of a specific split.
 
         Args:
-            split (str): The name of the split ("train", "validate", or "test").
+            split (str): The name of the split ("training", "validating", or "testing").
 
         Returns:
             float: The proportion of the specified split.
         """
-        assert split in ["train", "validate", "test"]
+        assert split in ["training", "validating", "testing"]
 
         total: int = self.total
 
-        splits = dict(train=self.train, validate=self.validate, test=self.test)
+        splits = dict(training=self.training, validating=self.validating, testing=self.testing)
 
         return splits[split] / total
 
@@ -297,11 +286,10 @@ class SplitManager:
         Returns:
             int: The total size of all splits.
         """
-        return sum([self.train, self.validate, self.test])
+        return sum([self.training, self.validating, self.testing])
 
 
-@dataclass
-class SampleManager:
+class SampleManager(pydantic.BaseModel):
     """A class that manages the sampling rates for pretraining and finetuning in a machine learning task."""
 
     batch_size: int
@@ -310,7 +298,8 @@ class SampleManager:
     task: SupervisedTaskManager
     split: SplitManager
 
-    def __post_init__(self):
+    @functools.cached_property
+    def cache(self) -> dict[str, dict[str, float]]:
         """
         Initializes the SampleManager and calculates the sample rates for pretraining and finetuning.
 
@@ -323,22 +312,38 @@ class SampleManager:
             return f"There not enough observations to create {n_steps} batches for split '{split}' during {mode}."
 
         # expected finetuning steps per epoch
-        self.pretraining: dict[str, float] = {}
-        for subset in ["train", "validate", "test"]:
+        pretraining: dict[str, float] = {}
+        for subset in ["training", "validating", "testing"]:
             sample_rate = (self.n_pretrain_steps * self.batch_size) / (self.split[subset] * n_events)
             assert sample_rate < 1.0, warn(mode="pretraining", n_steps=self.n_pretrain_steps, split=subset)
-            self.pretraining[subset] = sample_rate
+            pretraining[subset] = sample_rate
 
         n_targets = 0
         for label_count, label_sample_rate in zip(self.task.balancer.counts, self.task.balancer.thresholds):
             n_targets += label_count * label_sample_rate
 
         # expected finetuning steps per epoch
-        self.finetuning: dict[str, float] = {}
-        for subset in ["train", "validate", "test"]:
+        finetuning: dict[str, float] = {}
+        for subset in ["training", "validating", "testing"]:
             sample_rate = (self.n_finetune_steps * self.batch_size) / (self.split[subset] * n_targets)
             assert sample_rate < 1.0, warn(mode="finetuning", n_steps=self.n_finetune_steps, split=subset)
-            self.finetuning[subset] = sample_rate
+            finetuning[subset] = sample_rate
+
+        return dict(pretraining=pretraining, finetuning=finetuning)
+
+    @property
+    def pretraining(self) -> dict[str, float]:
+        """
+        Returns the sample rates for pretraining.
+        """
+        return self.cache["pretraining"]
+
+    @property
+    def finetuning(self) -> dict[str, float]:
+        """
+        Returns the sample rates for finetuning.
+        """
+        return self.cache["finetuning"]
 
     def show(self) -> None:
         """
@@ -369,7 +374,7 @@ class SampleManager:
 
         n_events = self.split.total
 
-        n_inference_batches: int = int(self.split["test"] * n_events / self.batch_size)
+        n_inference_batches: int = int(self.split["testing"] * n_events / self.batch_size)
 
         renderables = Group(
             render("pretrain"),
@@ -380,13 +385,12 @@ class SampleManager:
         console.print(Panel.fit(renderables, title="Sample Managers"))
 
 
-@dataclass
-class CentroidManager:
+class CentroidManager(pydantic.BaseModel):
     """A class that manages centroids and provides methods to calculate digests and display information."""
 
     centroids: list[Centroid | None]
 
-    def __post_init__(self):
+    def model_post_init(self, *args, **kwargs):
         self.centroids = [centroid for centroid in self.centroids if centroid is not None]
 
     @functools.cached_property
@@ -446,15 +450,14 @@ class CentroidManager:
         return f"CentroidManager({[centroid.name for centroid in self.centroids]})"
 
 
-@dataclass
-class LevelManager:
+class LevelManager(pydantic.BaseModel):
     """
     A class that manages levels and mappings for different fields.
     """
 
     levelsets: list[LevelSet | None]
 
-    def __post_init__(self):
+    def model_post_init(self, *args, **kwargs):
         self.levelsets = [levelset for levelset in self.levelsets if levelset is not None]
 
     @functools.cached_property
@@ -507,11 +510,10 @@ class LevelManager:
         return f"LevelManager({[name for name in self.mappings.keys()]})"
 
 
-@dataclass
-class SystemManager:
+class SystemManager(pydantic.BaseModel):
     """The SystemManager class manages various components of the system."""
 
-    schema: SchemaManager
+    structure: StructureManager
     task: SupervisedTaskManager
     sample: SampleManager
     split: SplitManager
@@ -533,8 +535,7 @@ class SystemManager:
             presenter.show()
 
 
-@dataclass
-class StashManager:
+class StashManager(pydantic.BaseModel):
     label: str
     checkpoint: str
     manager: SystemManager

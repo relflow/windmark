@@ -2,6 +2,7 @@
 
 from windmark.tasks.compare import compare_sequence_lengths as compare
 from windmark.tasks.digest import create_digest_centroids_from_lifestream as digest
+from windmark.tasks.fan import fan_out_schema_fields as fan
 from windmark.tasks.finetune import finetune_sequence_encoder as finetune
 from windmark.tasks.label import create_experiment_label as label
 from windmark.tasks.levels import create_unique_levels_from_lifestream as levels
@@ -17,6 +18,7 @@ from windmark.tasks.task import create_task_manager as task
 __all__ = [
     compare,
     digest,
+    fan,
     finetune,
     label,
     levels,

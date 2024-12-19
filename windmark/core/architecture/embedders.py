@@ -58,7 +58,7 @@ class StaticCategoryFieldEmbedder(FieldEmbedder):
 
         self.field: FieldRequest = field
         self.embeddings = torch.nn.Embedding(
-            len(manager.levelsets[field]) + len(Tokens), params.d_field * len(manager.schema.dynamic)
+            len(manager.levelsets[field]) + len(Tokens), params.d_field * len(manager.structure.dynamic)
         )
 
     @jaxtyped(typechecker=beartype)
@@ -168,7 +168,7 @@ class StaticQuantileFieldEmbedder(FieldEmbedder):
 
         self.field: FieldRequest = field
         self.embeddings = torch.nn.Embedding(
-            params.n_quantiles + len(Tokens), params.d_field * len(manager.schema.dynamic)
+            params.n_quantiles + len(Tokens), params.d_field * len(manager.structure.dynamic)
         )
 
         self.register_buffer("jitter", torch.tensor(params.jitter))
@@ -289,7 +289,7 @@ class StaticNumberFieldEmbedder(FieldEmbedder):
 
         weights = torch.logspace(start=-params.n_bands, end=offset, steps=params.n_bands + offset + 1, base=2)
 
-        self.linear = torch.nn.Linear(2 * len(weights), params.d_field * len(manager.schema.dynamic))
+        self.linear = torch.nn.Linear(2 * len(weights), params.d_field * len(manager.structure.dynamic))
         self.register_buffer("weights", weights.mul(math.pi).unsqueeze(dim=0))
 
     @jaxtyped(typechecker=beartype)

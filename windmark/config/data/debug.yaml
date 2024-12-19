@@ -7,19 +7,35 @@ structure:
   target_id: is_fraud
 
   fields:
-    merchant_state: categories
-    merchant_city: entities
-    use_chip: categories
-    amount: quantiles
-    merchant_name: entities
-    timestamp: timestamps
-    card: entities
-    mcc: categories
-    has_bad_pin: categories
-    has_bad_zipcode: categories
-    has_bad_card_number: categories
-    has_insufficient_balance: categories
-    has_bad_expiration: categories
-    has_technical_glitch: categories
-    has_bad_cvv: categories
-    timedelta: quantiles
+    - name: merchant_state
+      type: Categories
+    - name: merchant_city
+      type: Entities
+    - name: use_chip
+      type: Categories
+    - name: amount
+      type: Quantiles
+    - name: merchant_name
+      type: Entities
+    - name: timestamp
+      type: Timestamps
+    - name: card
+      type: Entities
+    - name: mcc
+      type: Categories
+    - name: has_bad_pin
+      type: Categories
+    - name: has_bad_zipcode
+      type: Categories
+    - name: has_bad_card_number
+      type: Categories
+    - name: has_insufficient_balance
+      type: Categories
+    - name: has_bad_expiration
+      type: Categories
+    - name: has_technical_glitch
+      type: Categories
+    - name: has_bad_cvv
+      type: Categories
+    - name: timedelta
+      type: Quantiles

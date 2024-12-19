@@ -42,7 +42,7 @@ def transform(
 
     output = {}
 
-    for field in manager.schema.fields:
+    for field in manager.structure.fields:
         values = fields[field.name]
         tensorfield = FieldInterface.tensorfield(field)
         output[field.name] = tensorfield.new(values=values, field=field, params=params, manager=manager)
@@ -86,7 +86,7 @@ def package(
 
     is_event_masked = torch.rand(N, L).lt(params.p_mask_event)
 
-    for field in manager.schema.fields:
+    for field in manager.structure.fields:
         targets[field.name] = fields[field.name].mask(is_event_masked, params=params)
 
     # pruned_fields = []
@@ -116,7 +116,7 @@ def mock(params: Hyperparameters, manager: SystemManager) -> TensorDict:
     for _ in range(params.batch_size):
         tree = {}
 
-        for field in manager.schema.fields:
+        for field in manager.structure.fields:
             tensorfield = FieldInterface.tensorfield(field)
             tree[field.name] = tensorfield.mock(field=field, params=params, manager=manager)
 
@@ -165,7 +165,7 @@ class SequenceDataset(torch.utils.data.IterableDataset):
             for line in shard:
                 sequence = msgspec.json.decode(line)
 
-                if sequence[self.manager.schema.split_id] != self.split:
+                if sequence[self.manager.structure.split_id] != self.split:
                     continue
 
                 observations = self.sampler(sequence=sequence)

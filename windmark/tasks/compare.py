@@ -4,7 +4,7 @@ from pathlib import Path
 
 import flytekit as fl
 
-from windmark.core.constructs.managers import SchemaManager
+from windmark.core.constructs.managers import StructureManager
 from windmark.core.constructs.general import FieldRequest
 from windmark.core.data.processors import multithread, compare
 from windmark.orchestration.environments import context
@@ -13,16 +13,16 @@ from windmark.orchestration.environments import context
 
 
 @context.default
-def compare_sequence_lengths(lifestreams: fl.FlyteDirectory, schema: SchemaManager, field: FieldRequest):
+def compare_sequence_lengths(lifestreams: fl.FlyteDirectory, schema: StructureManager, field: FieldRequest):
     """
     Compares the lengths of the inputs and indices in the given lifestreams.
 
     Args:
         lifestreams (fl.FlyteDirectory): The directory containing the lifestreams.
-        schema (SchemaManager): The schema manager for the task.
+        schema (StructureManager): The schema manager for the task.
         field (FieldRequest): The field to compare with the index.
     """
 
     path = Path(lifestreams.path)
 
-    multithread(process=compare, path=path, key=field.name, is_static=field.type.is_static, schema=schema)
+    multithread(process=compare, path=path, key=field.name, is_static=field.is_static, schema=schema)

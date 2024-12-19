@@ -42,6 +42,15 @@ wheels = [
 ]
 
 [[package]]
+name = "aiofiles"
+version = "24.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0b/03/a88171e277e8caa88a4c77808c20ebb04ba74cc4681bf1e9416c862de237/aiofiles-24.1.0.tar.gz", hash = "sha256:22a075c9e5a3810f0c2e48f3008c94d68c65d763b9b03857924c99e57355166c", size = 30247 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a5/45/30bb92d442636f570cb5651bc661f52b610e2eec3f891a5dc3a4c3667db0/aiofiles-24.1.0-py3-none-any.whl", hash = "sha256:b4ec55f4195e3eb5d7abd1bf7e061763e864dd4954231fb8539a0ef8bb8260e5", size = 15896 },
+]
+
+[[package]]
 name = "aiohappyeyeballs"
 version = "2.4.3"
 source = { registry = "https://pypi.org/simple" }
@@ -2349,16 +2358,16 @@ wheels = [
 
 [[package]]
 name = "protobuf"
-version = "5.28.3"
+version = "5.27.5"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/74/6e/e69eb906fddcb38f8530a12f4b410699972ab7ced4e21524ece9d546ac27/protobuf-5.28.3.tar.gz", hash = "sha256:64badbc49180a5e401f373f9ce7ab1d18b63f7dd4a9cdc43c92b9f0b481cef7b", size = 422479 }
+sdist = { url = "https://files.pythonhosted.org/packages/d8/a6/94e05400fc84f90f1c1476c23388bf2a3d5b8a5f88fdf1f45dc778ba4412/protobuf-5.27.5.tar.gz", hash = "sha256:7fa81bc550201144a32f4478659da06e0b2ebe4d5303aacce9a202a1c3d5178d", size = 401551 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d1/c5/05163fad52d7c43e124a545f1372d18266db36036377ad29de4271134a6a/protobuf-5.28.3-cp310-abi3-win32.whl", hash = "sha256:0c4eec6f987338617072592b97943fdbe30d019c56126493111cf24344c1cc24", size = 419624 },
-    { url = "https://files.pythonhosted.org/packages/9c/4c/4563ebe001ff30dca9d7ed12e471fa098d9759712980cde1fd03a3a44fb7/protobuf-5.28.3-cp310-abi3-win_amd64.whl", hash = "sha256:91fba8f445723fcf400fdbe9ca796b19d3b1242cd873907979b9ed71e4afe868", size = 431464 },
-    { url = "https://files.pythonhosted.org/packages/1c/f2/baf397f3dd1d3e4af7e3f5a0382b868d25ac068eefe1ebde05132333436c/protobuf-5.28.3-cp38-abi3-macosx_10_9_universal2.whl", hash = "sha256:a3f6857551e53ce35e60b403b8a27b0295f7d6eb63d10484f12bc6879c715687", size = 414743 },
-    { url = "https://files.pythonhosted.org/packages/85/50/cd61a358ba1601f40e7d38bcfba22e053f40ef2c50d55b55926aecc8fec7/protobuf-5.28.3-cp38-abi3-manylinux2014_aarch64.whl", hash = "sha256:3fa2de6b8b29d12c61911505d893afe7320ce7ccba4df913e2971461fa36d584", size = 316511 },
-    { url = "https://files.pythonhosted.org/packages/5d/ae/3257b09328c0b4e59535e497b0c7537d4954038bdd53a2f0d2f49d15a7c4/protobuf-5.28.3-cp38-abi3-manylinux2014_x86_64.whl", hash = "sha256:712319fbdddb46f21abb66cd33cb9e491a5763b2febd8f228251add221981135", size = 316624 },
-    { url = "https://files.pythonhosted.org/packages/ad/c3/2377c159e28ea89a91cf1ca223f827ae8deccb2c9c401e5ca233cd73002f/protobuf-5.28.3-py3-none-any.whl", hash = "sha256:cee1757663fa32a1ee673434fcf3bf24dd54763c79690201208bafec62f19eed", size = 169511 },
+    { url = "https://files.pythonhosted.org/packages/d9/c9/5ee60cce78a83517b66aaf902c936c6db5b23afd6df7f9906aa67e4931a5/protobuf-5.27.5-cp310-abi3-win32.whl", hash = "sha256:b46647660bc433a43519af7faabe424bf2feb8db6e2293e6906c7aa3a1abefe2", size = 405813 },
+    { url = "https://files.pythonhosted.org/packages/78/46/68408f3a013fee550522930db0eb28df4716c5b2bac5055f00847d6dfc91/protobuf-5.27.5-cp310-abi3-win_amd64.whl", hash = "sha256:5aa37101a985559722e84badf583532b0ec92616a2cc5d3f59f6152f136ca46a", size = 426904 },
+    { url = "https://files.pythonhosted.org/packages/52/11/e372413162ff4da44edf9220eb5d2cd03ff6a4b87a9b7b298ca729ddbb96/protobuf-5.27.5-cp38-abi3-macosx_10_9_universal2.whl", hash = "sha256:83fc15159713bb1de8e24e025d8739c6c9c6856021d2834d6feb0d1d5c6ec3c6", size = 412232 },
+    { url = "https://files.pythonhosted.org/packages/0a/3c/bd25f165ba1bcbc43a0211c962c97007b6d88668a798a2d3c99e7688a08c/protobuf-5.27.5-cp38-abi3-manylinux2014_aarch64.whl", hash = "sha256:56cb4f9ade31597d06a5aca264cb5d9bf445dc07758296004ead080ec8e4087c", size = 307126 },
+    { url = "https://files.pythonhosted.org/packages/34/8a/1538a34d6f57d9a2ef68384ef39cca1e00cb4d19398be2873995a50657c7/protobuf-5.27.5-cp38-abi3-manylinux2014_x86_64.whl", hash = "sha256:aab519ebdc1bd7469e7df4011545ff4f81decad6d02f0185ddbe6ee496f1d940", size = 309244 },
+    { url = "https://files.pythonhosted.org/packages/5b/22/f3dde34910f908b927dfd6870f33adbb963c90360324d33eb334722acd59/protobuf-5.27.5-py3-none-any.whl", hash = "sha256:03a25e0b2b0271bc63fe009d30890ba907fd36dbe2b8e4851da4bb893d251d05", size = 164755 },
 ]
 
 [[package]]
@@ -3350,6 +3359,43 @@ wheels = [
 ]
 
 [[package]]
+name = "union"
+version = "0.1.116"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "aiofiles" },
+    { name = "click" },
+    { name = "flyteidl" },
+    { name = "flytekit" },
+    { name = "fsspec" },
+    { name = "googleapis-common-protos" },
+    { name = "grpcio" },
+    { name = "grpcio-status" },
+    { name = "importlib-metadata" },
+    { name = "keyring" },
+    { name = "mashumaro" },
+    { name = "protobuf", marker = "platform_system == 'Windows'" },
+    { name = "pyyaml" },
+    { name = "rich" },
+    { name = "rich-click" },
+    { name = "sentry-sdk" },
+    { name = "typing-extensions" },
+    { name = "unionai-actor", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/05/ab/f104bb807ef5eabdf265de2a9aad100eef8bdd31487fac4b645ae1ac2370/union-0.1.116.tar.gz", hash = "sha256:e90debc63f565e56da4bd6ec1045432bc29f3bcb4a4163fe898adcca24cd1d36", size = 108850 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/01/81/0cd95c3c2d938f35cc1691502600015c102bec6e5bd843503a820d35f863/union-0.1.116-py3-none-any.whl", hash = "sha256:edd16b6b42e576e832d48c78fbd3bbe2c3f39e241f847f7ff741aaf5d4015439", size = 151020 },
+]
+
+[[package]]
+name = "unionai-actor"
+version = "0.1.5"
+source = { registry = "https://pypi.org/simple" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/80/46/6dc4d730210e313479aa31380ace4a03cf15dd5f400c10ad12e800af0ef6/unionai_actor-0.1.5-cp38-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c52cc53f77e3d83c9ded6cdb0d2c5c30c4b3581cf71f2dfb3536cda54ced552e", size = 1853748 },
+]
+
+[[package]]
 name = "urllib3"
 version = "2.2.3"
 source = { registry = "https://pypi.org/simple" }
@@ -3604,6 +3650,7 @@ dependencies = [
     { name = "textual" },
     { name = "torch" },
     { name = "torchmetrics" },
+    { name = "union" },
     { name = "valkey", extra = ["libvalkey"] },
     { name = "wandb" },
 ]
@@ -3646,6 +3693,7 @@ requires-dist = [
     { name = "textual", specifier = ">=0.72.0" },
     { name = "torch", specifier = "==2.3.0" },
     { name = "torchmetrics", specifier = ">=1.3.2" },
+    { name = "union", specifier = ">=0.1.116" },
     { name = "valkey", extras = ["libvalkey"], specifier = ">=6.0.2" },
     { name = "wandb", specifier = ">=0.18.3" },
 ]

@@ -1,6 +1,5 @@
 # Copyright Grantham Taylor.
 
-import importlib
 from types import SimpleNamespace
 
 import flytekit as fl
@@ -8,9 +7,9 @@ import flytekit as fl
 from windmark.orchestration.context import TaskEnvironment
 
 base = TaskEnvironment(
-    container_image=fl.ImageSpec(requirements="requirements.txt", apt_packages=["build-essential"]),
-    secret_requests=[fl.Secret(group="windmark", key="WANDB_API_KEY")],
-    cache_version=str(importlib.metadata.version("windmark")),
+    container_image=fl.ImageSpec(builder="union", requirements="requirements.txt", apt_packages=["build-essential"]),
+    secret_requests=[fl.Secret(key="WANDB_API_KEY")],
+    cache_version="v0.1.0",
     cache=True,
     retries=3,
 )

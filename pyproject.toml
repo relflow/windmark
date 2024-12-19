@@ -28,10 +28,8 @@ dependencies = [
     "litserve>=0.2.5",
     "valkey[libvalkey]>=6.0.2",
     "aiohttp>=3.11.7",
+    "union>=0.1.116",
 ]
-
-[tool.setuptools]
-packages = ["windmark"]
 
 [tool.uv]
 dev-dependencies = [

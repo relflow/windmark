@@ -1,7 +1,6 @@
 # Copyright Grantham Taylor.
 
 import json
-from dataclasses import asdict
 
 import flytekit as fl
 
@@ -25,4 +24,4 @@ def stash_model_state(checkpoint: fl.FlyteFile, manager: SystemManager, params: 
     stash = StashManager(checkpoint=str(checkpoint), manager=manager, params=params, label=label)
 
     with open(f"stash/{label}.json", "w") as file:
-        json.dump(asdict(stash), file)
+        json.dump(stash.dict(), file)

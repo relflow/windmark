@@ -13,7 +13,7 @@ from omegaconf import DictConfig
 from hydra import compose, initialize
 import polars as pl
 
-from windmark.core.constructs.managers import SchemaManager
+from windmark.core.constructs.managers import StructureManager
 
 
 class Request(TypedDict):
@@ -26,7 +26,7 @@ def sample(manifest: DictConfig) -> Iterator[Request]:
 
     shards = [file for file in os.listdir(datapath) if file.endswith("ndjson")]
 
-    schema = SchemaManager.new(**manifest.data.structure)
+    schema = StructureManager.new(**manifest.data.structure)
 
     names = [field.name for field in schema.fields]
 

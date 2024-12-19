@@ -6,21 +6,21 @@ from functools import reduce
 
 import flytekit as fl
 
-from windmark.core.constructs.managers import SchemaManager, SupervisedTaskManager, BalanceManager
+from windmark.core.constructs.managers import StructureManager, SupervisedTaskManager, BalanceManager
 from windmark.core.data.processors import multithread, count
 from windmark.orchestration.environments import context
 
 
 @context.default
 def create_task_manager(
-    lifestreams: fl.FlyteDirectory, schema: SchemaManager, interpolation_rate: float
+    lifestreams: fl.FlyteDirectory, schema: StructureManager, interpolation_rate: float
 ) -> SupervisedTaskManager:
     """
     Creates a task manager for supervised machine learning tasks.
 
     Args:
         lifestreams (fl.FlyteDirectory): The directory containing the lifestreams.
-        schema (SchemaManager): The schema manager for the task.
+        schema (StructureManager): The schema manager for the task.
         interpolation_rate (float): interpolation rate.
 
     Returns:

@@ -17,7 +17,7 @@ from windmark.core.data.operators import transform
 
 def schema(stash: StashManager) -> TypeVar:
     annotations: dict[str, TypeVar] = {}
-    for field in stash.manager.schema.fields:
+    for field in stash.manager.structure.fields:
         tensorfield = FieldInterface.tensorfield(field)
         annotations[field.name] = tensorfield.get_annotation(manager=stash.manager, field=field)
 
@@ -42,7 +42,7 @@ class API(ls.LitAPI):
         self.port = port
         self.stash = stash
         self.limit: int = stash.params.n_context
-        self.fieldnames: list[str] = [field.name for field in stash.manager.schema.fields]
+        self.fieldnames: list[str] = [field.name for field in stash.manager.structure.fields]
 
     def setup(self, device: torch.device) -> None:
         self.device = device
