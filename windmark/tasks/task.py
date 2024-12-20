@@ -8,10 +8,10 @@ import flytekit as fl
 
 from windmark.core.constructs.managers import StructureManager, SupervisedTaskManager, BalanceManager
 from windmark.core.data.processors import multithread, count
-from windmark.orchestration.environments import context
+from windmark.orchestration import environments
 
 
-@context.default
+@environments.proc
 def create_task_manager(
     lifestreams: fl.FlyteDirectory, schema: StructureManager, interpolation_rate: float
 ) -> SupervisedTaskManager:
@@ -26,6 +26,8 @@ def create_task_manager(
     Returns:
         SupervisedTaskManager: The created task manager.
     """
+
+    lifestreams.download()
 
     path = Path(lifestreams.path)
 

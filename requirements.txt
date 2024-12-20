@@ -120,7 +120,7 @@ frozenlist==1.5.0
     # via
     #   aiohttp
     #   aiosignal
-fsspec==2024.10.0
+fsspec==2024.12.0
     # via
     #   adlfs
     #   flytekit
@@ -130,7 +130,7 @@ fsspec==2024.10.0
     #   s3fs
     #   torch
     #   union
-gcsfs==2024.10.0
+gcsfs==2024.12.0
     # via flytekit
 gitdb==4.0.11
     # via gitpython
@@ -229,7 +229,7 @@ keyring==25.5.0
     #   union
 libvalkey==4.0.1
     # via valkey
-lightning==2.4.0
+lightning==2.5.0
     # via windmark (pyproject.toml)
 lightning-utilities==0.11.9
     # via
@@ -412,7 +412,7 @@ python-json-logger==3.2.1
     # via flytekit
 pytimeparse==1.1.8
     # via flytekit
-pytorch-lightning==2.4.0
+pytorch-lightning==2.5.0
     # via lightning
 pytz==2024.2
     # via
@@ -454,7 +454,7 @@ rich-click==1.8.5
     #   union
 rsa==4.9
     # via google-auth
-s3fs==2024.10.0
+s3fs==2024.12.0
     # via flytekit
 secretstorage==3.3.3
     # via keyring
@@ -533,7 +533,7 @@ tzdata==2024.2
     # via pandas
 uc-micro-py==1.0.3
     # via linkify-it-py
-union==0.1.116
+union==0.1.117
     # via windmark (pyproject.toml)
 unionai-actor==0.1.5
     # via union

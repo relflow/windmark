@@ -1,8 +1,8 @@
 # Copyright Grantham Taylor.
 
 import flytekit as fl
-
 import torch
+import wandb
 from lightning.pytorch import Trainer
 from lightning.pytorch.callbacks import EarlyStopping, ModelCheckpoint, RichProgressBar, LearningRateMonitor
 from lightning.pytorch.loggers.wandb import WandbLogger
@@ -11,10 +11,10 @@ from windmark.core.architecture.encoders import SequenceModule
 from windmark.core.constructs.managers import SystemManager
 from windmark.core.constructs.general import Hyperparameters
 from windmark.core.architecture.callbacks import ThawedFinetuning
-from windmark.orchestration.environments import context
+from windmark.orchestration import environments
 
 
-@context.lab
+@environments.lab
 def finetune_sequence_encoder(
     lifestreams: fl.FlyteDirectory,
     checkpoint: fl.FlyteFile,
@@ -35,6 +35,12 @@ def finetune_sequence_encoder(
     Returns:
         fl.FlyteFile: The file object representing the best model checkpoint after finetuning.
     """
+
+    lifestreams.download()
+    checkpoint.download()
+
+    key = fl.current_context().secrets.get(key="WANDB_API_KEY")
+    wandb.login(key=key)
 
     torch.set_float32_matmul_precision("medium")
     torch.multiprocessing.set_sharing_strategy("file_system")

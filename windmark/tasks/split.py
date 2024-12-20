@@ -8,10 +8,10 @@ import flytekit as fl
 
 from windmark.core.constructs.managers import StructureManager, SplitManager
 from windmark.core.data.processors import multithread, count
-from windmark.orchestration.environments import context
+from windmark.orchestration import environments
 
 
-@context.default
+@environments.proc
 def create_split_manager(lifestreams: fl.FlyteDirectory, schema: StructureManager) -> SplitManager:
     """
     Create a SplitManager to count number of events in each strata.
@@ -26,6 +26,8 @@ def create_split_manager(lifestreams: fl.FlyteDirectory, schema: StructureManage
     Raises:
         ValueError: If any of the splits in the resulting SplitManager are not in ["train", "test", "validate"].
     """
+
+    lifestreams.download()
 
     path = Path(lifestreams.path)
 

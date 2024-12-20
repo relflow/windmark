@@ -9,10 +9,10 @@ import flytekit as fl
 from windmark.core.constructs.managers import LevelSet
 from windmark.core.dev.interface import FieldRequest, FieldType
 from windmark.core.data.processors import multithread, count
-from windmark.orchestration.environments import context
+from windmark.orchestration import environments
 
 
-@context.default
+@environments.proc
 def create_unique_levels_from_lifestream(lifestreams: fl.FlyteDirectory, field: FieldRequest) -> LevelSet | None:
     """
     Create unique levels from a lifestream.
@@ -27,6 +27,8 @@ def create_unique_levels_from_lifestream(lifestreams: fl.FlyteDirectory, field: 
 
     if field.type not in [FieldType.Category, FieldType.Categories]:
         return None
+
+    lifestreams.download()
 
     print(f'- creating state manager for field "{field.name}"')
 

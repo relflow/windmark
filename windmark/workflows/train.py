@@ -7,11 +7,17 @@ import flytekit as fl
 import windmark.tasks as lib
 from windmark.core.constructs.general import Hyperparameters
 from windmark.core.constructs.managers import StructureManager
+from windmark.orchestration import environments
+
+
+@environments.lite
+def fetch() -> fl.FlyteDirectory:
+    return fl.FlyteDirectory.from_source("s3://union-oc-production-demo/windmark/trxns/")
 
 
 @fl.workflow
 def train(
-    lifestreams: fl.FlyteDirectory,
+    # lifestreams: fl.FlyteDirectory,
     schema: StructureManager,
     params: Hyperparameters,
 ) -> fl.FlyteFile:
@@ -19,16 +25,19 @@ def train(
     Trains a model using the provided data and hyperparameters.
 
     Args:
-        datapath (fl.FlyteDirectory): The path to the data.
         schema (StructureManager): The schema manager object.
         params (Hyperparameters): The hyperparameters object.
     """
+
+    lifestreams = fetch()
 
     label = lib.label()
 
     fields = lib.fan(schema=schema)
 
-    fl.map_task(partial(lib.compare, lifestreams=lifestreams, schema=schema))(field=fields)
+    compare = partial(lib.compare, lifestreams=lifestreams, sequence_id=schema.sequence_id, event_id=schema.event_id)
+
+    fl.map_task(compare)(field=fields)
 
     split = lib.split(lifestreams=lifestreams, schema=schema)
 

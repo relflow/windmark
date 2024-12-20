@@ -3,6 +3,7 @@
 import math
 import functools
 
+import flytekit as fl
 import numpy as np
 from rich.console import Console, Group
 from rich.table import Table
@@ -535,8 +536,8 @@ class SystemManager(pydantic.BaseModel):
             presenter.show()
 
 
-class StashManager(pydantic.BaseModel):
+class StashManager:
     label: str
-    checkpoint: str
+    checkpoint: fl.FlyteFile
     manager: SystemManager
     params: Hyperparameters

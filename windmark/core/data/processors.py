@@ -81,7 +81,8 @@ def compare(resources: dict[str, Any], worker_id: int):
 
     decoder = msgspec.json.Decoder(dict[str, Any])
 
-    schema = resources["schema"]
+    sequence_id = resources["sequence_id"]
+    event_id = resources["event_id"]
     key = resources["key"]
     is_static = resources["is_static"]
 
@@ -91,7 +92,7 @@ def compare(resources: dict[str, Any], worker_id: int):
                 for line in file:
                     sequence = decoder.decode(line)
                     inputs: list[Any] = sequence[key]
-                    indices: list[Any] = sequence[schema.event_id]
+                    indices: list[Any] = sequence[event_id]
 
                     if is_static:
                         if isinstance(inputs, list):
@@ -106,7 +107,7 @@ def compare(resources: dict[str, Any], worker_id: int):
                         raise ValueError(f"Event ID must be a list, got '{type(indices)}' instead")
 
                     if len(inputs) != len(indices):
-                        sequence_id = sequence[schema.sequence_id]
+                        sequence_id = sequence[sequence_id]
                         raise ValueError(
                             "The lengths of the inputs and indices must match"
                             f"sequence '{sequence_id}' in '{filename}' do not match"

@@ -9,10 +9,10 @@ import flytekit as fl
 
 from windmark.core.constructs.general import Centroid, FieldRequest, FieldType
 from windmark.core.data.processors import multithread, digest
-from windmark.orchestration.environments import context
+from windmark.orchestration import environments
 
 
-@context.default
+@environments.proc
 def create_digest_centroids_from_lifestream(
     lifestreams: fl.FlyteDirectory,
     field: FieldRequest,
@@ -32,6 +32,8 @@ def create_digest_centroids_from_lifestream(
         return None
 
     print(f'- creating state manager for field "{field.name}"')
+
+    lifestreams.download()
 
     path = Path(lifestreams.path)
 

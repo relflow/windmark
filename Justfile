@@ -13,7 +13,7 @@ publish:
   @typst compile docs/whitepaper/whitepaper.typ docs/whitepaper/windmark.pdf  --root=docs
 
 # run training pipeline
-train: freeze && clean
+train: && clean
   @echo "JUST running model training pipeline"
   @uv run -m windmark
 
@@ -33,9 +33,10 @@ clean:
   @rm -rf wandb
   @rm -rf outputs
 
-# freeze python dependencies to requirements.txt
-freeze:
-  @echo "JUST freezing dependencies to requirements.txt"
+# sync pyproject.toml and freeze dependencies
+sync:
+  @echo "JUST syncing pyproject.toml and freezing dependencies"
+  @uv sync
   @uv pip compile pyproject.toml > requirements.txt --python-platform linux
 
 # start valkey database
@@ -55,6 +56,10 @@ client:
   @uv run -m windmark.inference.client
 
 # run model training in debug mode
-debug: freeze && clean
+debug: && clean
   @echo "JUST debugging model training workflow"
   @uv run -m windmark data=debug model=debug
+
+upload:
+  @echo "JUST uploading ledger to S3"
+  @uv run union run --remote windmark/workflows/upload.py upload

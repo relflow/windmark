@@ -1,20 +1,20 @@
 # Copyright Grantham Taylor.
 
+import flytekit as fl
+import wandb
 import torch
 from lightning.pytorch import Trainer
 from lightning.pytorch.callbacks import RichProgressBar
 from lightning.pytorch.loggers.wandb import WandbLogger
 
-import flytekit as fl
-
 from windmark.core.architecture.encoders import SequenceModule
 from windmark.core.architecture.callbacks import ParquetBatchWriter
 from windmark.core.constructs.managers import SystemManager
 from windmark.core.constructs.general import Hyperparameters
-from windmark.orchestration.environments import context
+from windmark.orchestration import environments
 
 
-@context.lab
+@environments.lab
 def predict_sequence_encoder(
     checkpoint: fl.FlyteFile,
     lifestreams: fl.FlyteDirectory,
@@ -35,6 +35,12 @@ def predict_sequence_encoder(
     Returns:
         fl.FlyteFile: Model score predictions
     """
+
+    lifestreams.download()
+    checkpoint.download()
+
+    key = fl.current_context().secrets.get(key="WANDB_API_KEY")
+    wandb.login(key=key)
 
     torch.set_float32_matmul_precision("medium")
     torch.multiprocessing.set_sharing_strategy("file_system")

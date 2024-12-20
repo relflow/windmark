@@ -1,6 +1,7 @@
 # Copyright Grantham Taylor.
 
 import flytekit as fl
+import wandb
 import torch
 from lightning.pytorch import Trainer
 from lightning.pytorch.callbacks import (
@@ -14,10 +15,10 @@ from lightning.pytorch.loggers.wandb import WandbLogger
 from windmark.core.architecture.encoders import SequenceModule
 from windmark.core.constructs.managers import SystemManager
 from windmark.core.constructs.general import Hyperparameters
-from windmark.orchestration.environments import context
+from windmark.orchestration import environments
 
 
-@context.lab
+@environments.lab
 def pretrain_sequence_encoder(
     lifestreams: fl.FlyteDirectory,
     params: Hyperparameters,
@@ -36,6 +37,11 @@ def pretrain_sequence_encoder(
     Returns:
         fl.FlyteFile: The path to the best model checkpoint file.
     """
+
+    lifestreams.download()
+
+    key = fl.current_context().secrets.get(key="WANDB_API_KEY")
+    wandb.login(key=key)
 
     torch.set_float32_matmul_precision("medium")
     torch.multiprocessing.set_sharing_strategy("file_system")

@@ -2,10 +2,10 @@
 
 from windmark.core.constructs.managers import SupervisedTaskManager, SplitManager, SampleManager
 from windmark.core.constructs.general import Hyperparameters
-from windmark.orchestration.environments import context
+from windmark.orchestration import environments
 
 
-@context.default
+@environments.lite
 def create_sample_manager(
     task: SupervisedTaskManager,
     params: Hyperparameters,

@@ -17,7 +17,7 @@ def windmark(config) -> None:
     )
 
     inputs = dict(
-        lifestreams=config.data.path,
+        # lifestreams=fl.FlyteDirectory(config.data.path),
         schema=StructureManager(**config.data.structure),
         params=Hyperparameters(**config.model),
     )

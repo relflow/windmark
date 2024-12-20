@@ -1,10 +1,10 @@
 # Copyright Grantham Taylor.
 
 from faker import Faker
-from windmark.orchestration.environments import context
+from windmark.orchestration import environments
 
 
-@context.default(cache=False)
+@environments.lite(cache=False)
 def create_experiment_label() -> str:
     """
     Generates a new label.
