@@ -12,7 +12,7 @@ from textual.binding import Binding
 from textual.containers import HorizontalScroll
 from textual.widgets import DataTable, TabbedContent, TabPane, Footer
 
-from windmark.core.constructs.managers import StructureManager
+from core.constructs.managers import StructureManager
 
 
 class LifestreamSampler:

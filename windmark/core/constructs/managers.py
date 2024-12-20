@@ -11,7 +11,7 @@ from rich.panel import Panel
 from pytdigest import TDigest
 
 import pydantic
-from windmark.core.constructs.general import Centroid, LevelSet, FieldRequest, Hyperparameters
+from core.constructs.general import Centroid, LevelSet, FieldRequest, Hyperparameters
 
 
 class StructureManager(pydantic.BaseModel):
@@ -536,7 +536,7 @@ class SystemManager(pydantic.BaseModel):
             presenter.show()
 
 
-class StashManager:
+class StashManager(pydantic.BaseModel):
     label: str
     checkpoint: fl.FlyteFile
     manager: SystemManager

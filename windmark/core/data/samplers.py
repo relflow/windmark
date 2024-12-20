@@ -5,8 +5,8 @@ from typing import TypeAlias, Any, Iterator
 from functools import partial
 from enum import Enum
 
-from windmark.core.constructs.managers import SystemManager
-from windmark.core.constructs.general import Hyperparameters
+from core.constructs.managers import SystemManager
+from core.constructs.general import Hyperparameters
 
 AnnotationType: TypeAlias = tuple[str, str, int]
 FieldType: TypeAlias = dict[str, list[Any] | Any]

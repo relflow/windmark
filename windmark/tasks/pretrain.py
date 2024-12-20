@@ -12,10 +12,10 @@ from lightning.pytorch.callbacks import (
 )
 from lightning.pytorch.loggers.wandb import WandbLogger
 
-from windmark.core.architecture.encoders import SequenceModule
-from windmark.core.constructs.managers import SystemManager
-from windmark.core.constructs.general import Hyperparameters
-from windmark.orchestration import environments
+from core.architecture.encoders import SequenceModule
+from core.constructs.managers import SystemManager
+from core.constructs.general import Hyperparameters
+from orchestration import environments
 
 
 @environments.lab

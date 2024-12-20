@@ -13,7 +13,7 @@ from omegaconf import DictConfig
 from hydra import compose, initialize
 import polars as pl
 
-from windmark.core.constructs.managers import StructureManager
+from core.constructs.managers import StructureManager
 
 
 class Request(TypedDict):

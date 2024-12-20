@@ -4,8 +4,8 @@ from typing import TypeVar
 import pydantic
 from hydra.utils import instantiate
 
-from windmark.core.architecture.embedders import FieldInterface
-from windmark.core.constructs.managers import StashManager
+from core.architecture.embedders import FieldInterface
+from core.constructs.managers import StashManager
 
 
 with open("stash/alison-island.json", "r") as file:

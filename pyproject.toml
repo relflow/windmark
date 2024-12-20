@@ -29,6 +29,7 @@ dependencies = [
     "valkey[libvalkey]>=6.0.2",
     "aiohttp>=3.11.7",
     "union>=0.1.116",
+    "windmark",
 ]
 
 [tool.uv]
@@ -46,6 +47,9 @@ dev-dependencies = [
     "ruff>=0.6.9",
     "semver>=3.0.2",
 ]
+
+[tool.uv.sources]
+windmark = { workspace = true }
 
 [tool.ruff]
 lint.extend-ignore = ["F722"]

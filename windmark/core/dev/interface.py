@@ -8,9 +8,9 @@ from beartype.typing import Callable
 from jaxtyping import Bool, Int
 from tensordict import tensorclass
 
-from windmark.core.constructs.general import FieldRequest, FieldType
-from windmark.core.constructs.managers import SystemManager
-from windmark.core.constructs.general import Hyperparameters
+from core.constructs.general import FieldRequest, FieldType
+from core.constructs.managers import SystemManager
+from core.constructs.general import Hyperparameters
 
 
 @tensorclass

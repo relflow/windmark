@@ -3,9 +3,9 @@
 import hydra
 import union
 
-from windmark.core.constructs.general import Hyperparameters
-from windmark.core.constructs.managers import StructureManager
-from windmark.workflows.train import train
+from core.constructs.general import Hyperparameters
+from core.constructs.managers import StructureManager
+from workflows.train import train
 
 EXECUTE_LOCALLY = False
 

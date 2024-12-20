@@ -1,7 +1,7 @@
 # Copyright Grantham Taylor.
 
 from faker import Faker
-from windmark.orchestration import environments
+from orchestration import environments
 
 
 @environments.lite(cache=False)

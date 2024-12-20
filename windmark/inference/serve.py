@@ -9,10 +9,10 @@ from tensordict import TensorDict
 import torch
 from beartype import beartype
 
-from windmark.core.architecture.embedders import FieldInterface
-from windmark.core.architecture.encoders import SequenceModule
-from windmark.core.constructs.managers import StashManager
-from windmark.core.data.operators import transform
+from core.architecture.embedders import FieldInterface
+from core.architecture.encoders import SequenceModule
+from core.constructs.managers import StashManager
+from core.data.operators import transform
 
 
 def schema(stash: StashManager) -> TypeVar:

@@ -2,7 +2,7 @@ _help:
   @just --list
 
 # run pre-commit checks
-check: publish
+check:
   @echo "JUST running pre-commit checks"
   @git add .
   @uv run pre-commit
@@ -15,7 +15,7 @@ publish:
 # run training pipeline
 train: && clean
   @echo "JUST running model training pipeline"
-  @uv run -m windmark
+  @uv run windmark/__main__.py
 
 # reset pyflyte cache
 reset:
@@ -25,7 +25,7 @@ reset:
 # run model explorer TUI
 explore:
   @echo "JUST running data explorer TUI"
-  @uv run -m windmark.core.dev.explorer
+  @uv run windmark/core/dev/explorer.py
 
 # clean up temporary files
 clean:
@@ -48,17 +48,17 @@ valkey:
 # start model deployment
 serve:
   @echo "JUST serving model deployment"
-  @uv run -m windmark.inference.serve
+  @uv run windmark/inference/serve.py
 
 # submit events to deployment
 client:
   @echo "JUST sending mock events to model deployment"
-  @uv run -m windmark.inference.client
+  @uv run windmark/inference/client.py
 
 # run model training in debug mode
 debug: && clean
   @echo "JUST debugging model training workflow"
-  @uv run -m windmark data=debug model=debug
+  @uv run windmark data=debug model=debug
 
 upload:
   @echo "JUST uploading ledger to S3"

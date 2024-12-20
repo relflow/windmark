@@ -1,20 +1,13 @@
 # Copyright Grantham Taylor.
 
-from typing import Annotated, TypedDict
+from typing import Annotated
 
 import union
 import flytekit as fl
 
-from windmark.core.constructs.general import Hyperparameters
-from windmark.core.constructs.managers import SystemManager
-from windmark.orchestration import environments
-
-
-class StashManager(TypedDict):
-    label: str
-    checkpoint: fl.FlyteFile
-    manager: SystemManager
-    params: Hyperparameters
+from core.constructs.general import Hyperparameters
+from core.constructs.managers import SystemManager, StashManager
+from orchestration import environments
 
 
 StashArtifact = union.Artifact(name="Windmark Model State")
@@ -26,7 +19,7 @@ def stash_model_state(
     manager: SystemManager,
     params: Hyperparameters,
     label: str,
-) -> Annotated[StashManager, StashArtifact]:
+) -> Annotated[list[StashManager], StashArtifact]:
     """
     Stash state required to reproduce a model.
 
@@ -41,4 +34,4 @@ def stash_model_state(
 
     stash = StashManager(checkpoint=checkpoint, manager=manager, params=params, label=label)
 
-    return StashArtifact.create_from(stash)
+    return StashArtifact.create_from([stash])

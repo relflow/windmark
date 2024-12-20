@@ -7,7 +7,7 @@ from tensordict import TensorDict
 from tensordict import tensorclass
 import torch
 
-from windmark.core.constructs.tensorfields import TensorField, TargetField
+from core.constructs.tensorfields import TensorField, TargetField
 
 
 class SequenceData:
