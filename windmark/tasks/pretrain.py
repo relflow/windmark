@@ -13,6 +13,7 @@ from lightning.pytorch.callbacks import (
 from lightning.pytorch.loggers.wandb import WandbLogger
 
 from core.architecture.encoders import SequenceModule
+from core.architecture.callbacks import FrozenPretraining
 from core.constructs.managers import SystemManager
 from core.constructs.general import Hyperparameters
 from orchestration import environments
@@ -46,12 +47,7 @@ def pretrain_sequence_encoder(
     torch.set_float32_matmul_precision("medium")
     torch.multiprocessing.set_sharing_strategy("file_system")
 
-    module = SequenceModule(
-        datapath=str(lifestreams.path),
-        params=params,
-        manager=manager,
-        mode="pretrain",
-    )
+    module = SequenceModule(datapath=str(lifestreams.path), params=params, manager=manager, mode="pretrain")
 
     checkpointer = ModelCheckpoint(
         dirpath=fl.current_context().working_directory, monitor="pretrain-total-validate/loss", filename=label
@@ -66,8 +62,10 @@ def pretrain_sequence_encoder(
             RichProgressBar(),
             EarlyStopping(monitor="pretrain-total-validate/loss", patience=params.patience),
             LearningRateMonitor(logging_interval="step"),
+            FrozenPretraining(),
             checkpointer,
         ],
+        limit_train_batches=params.n_pretrain_steps,
     )
 
     trainer.fit(module)

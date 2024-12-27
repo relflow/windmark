@@ -1,0 +1,4 @@
+MODEL_PORT: int = 1243
+DB_PORT: int = 6379
+MAX_BATCH_SIZE: int = 4
+N_WORKERS: int = 2

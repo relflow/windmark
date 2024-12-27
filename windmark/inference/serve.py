@@ -1,21 +1,28 @@
-import json
-from typing import TypeVar
+# import json
+from typing import TypeVar, Iterator
 
+# from hydra.utils import instantiate
 import pydantic
-from hydra.utils import instantiate
 import valkey
 import litserve as ls
 from tensordict import TensorDict
 import torch
 from beartype import beartype
+import union_runtime as serving
 
 from core.architecture.embedders import FieldInterface
 from core.architecture.encoders import SequenceModule
 from core.constructs.managers import StashManager
 from core.data.operators import transform
 
+NULL = "[UNK]"
 
-def schema(stash: StashManager) -> TypeVar:
+Context = dict[str, list[int|float|None] | list[str|None]]
+
+@beartype
+def schema(stash: StashManager) -> type:
+    """Create a pydantic schema from the structure of the stash manager."""
+
     annotations: dict[str, TypeVar] = {}
     for field in stash.manager.structure.fields:
         tensorfield = FieldInterface.tensorfield(field)
@@ -24,27 +31,60 @@ def schema(stash: StashManager) -> TypeVar:
     return pydantic.create_model("Fields", **annotations)
 
 
-# FIXME kind of gross, but I need to load the stash to instantiate the API schema
-with open("stash/alison-island.json", "r") as file:
-    stash = instantiate(json.load(file), _convert_="object", _target_=StashManager)
+def query(request: "Request", deployment: "Deployment") -> Context:
+    """Store a request in the database and retrieve the context."""
 
-Fields = schema(stash)
+    # replace None values with NULL
+    # it is annoying that redis does not support None values
+    request.fields = {key: (value if value is not None else NULL) for key, value in request.fields.items()}
+    
+    # add the dynamic fields to the database
+    deployment.db.xadd(**request.dict(), maxlen=deployment.limit, limit=deployment.limit)
+
+    # retrieve the most recent records from the database
+    records: list[dict[str, list]] = deployment.db.xrevrange(name=request.name, count=deployment.limit)
+
+    # forcibly cap the number of records to the limit, and then reverse the context
+    # in theory the stream will cap the number of records but we should be safe
+    events: Iterator[dict[str, list]] = reversed(records[: min(deployment.limit, len(records))])
+
+    # FIXME this would be improved by using a Redis Pipeline, such that we can batch the requests
+    # that is, instead of returning a list of dictionaries, we can return a dictionary of lists
+    # we still need to truncate, reverse, and convert to NULL, but that will be a little easier
+    # the pipeline should be a separate function
+
+    # TODO additionally we need to add support for static fields, which are not stored in the database
+    # presumably they're constant. perhaps we require the request to include them nonetheless.
+    
+    # convert list of events to dictionary of fields
+    context: Context = {}
+
+    for fieldname in deployment.fieldnames:
+        context[fieldname] = []
+        for event in events:
+            value = event[fieldname]
+            context[fieldname].append(value if value != NULL else None)
+    
+    return context
 
 
-class Request(pydantic.BaseModel):
-    name: str
-    fields: Fields
+class Deployment(ls.LitAPI):
 
+    """A deployment of the model."""
 
-class API(ls.LitAPI):
-    def __init__(self, stash: StashManager, host: str, port: int) -> None:
-        self.host = host
-        self.port = port
-        self.stash = stash
+    def __init__(self, stash: StashManager, connection: str) -> None:
+        """Initialize the deployment."""
+
+        self.stash: StashManager = stash
+        self.connection: str = connection
         self.limit: int = stash.params.n_context
         self.fieldnames: list[str] = [field.name for field in stash.manager.structure.fields]
+        self.device: torch.device | None = None
 
+    @beartype
     def setup(self, device: torch.device) -> None:
+        """Setup the deployment."""
+
         self.device = device
 
         self.model = SequenceModule.load_from_checkpoint(
@@ -55,46 +95,64 @@ class API(ls.LitAPI):
         )
 
         self.model.to(device)
+        
+        host, port = self.connection.split(":")
 
-        self.db = valkey.Valkey(host=self.host, port=self.port, decode_responses=True)
+        self.db = valkey.Valkey(host=host, port=int(port), decode_responses=True)
 
     @beartype
-    def decode_request(self, request: Request) -> TensorDict:
-        # add the record to the database
-        self.db.xadd(**request.dict(), maxlen=self.limit, limit=self.limit)
+    def decode_request(self, request: "Request") -> TensorDict:
+        """Decode a request to the model."""
 
-        # retrieve the most recent records from the database
-        records = self.db.xrevrange(name=request.name, count=self.limit)
+        # store the request in the database and query the context
+        context = query(request, self)
 
-        # forcibly cap the number of records to the limit, and then reverse the context
-        events = reversed(records[: min(self.limit, len(records))])
-
-        # convert list of events to dictionary of fields
-        fields = {name: [event[name] for _, event in events] for name in self.fieldnames}
-
-        # encode fields to tensordict of tensorfields
-        tensorfields = transform(fields, self.stash.params, self.stash.manager)
-
-        return tensorfields.to(self.device)
+        # encode context to tensordict of tensorfields
+        # this same function powers the training pipeline
+        return transform(context, self.stash.params, self.stash.manager).to(self.device)
 
     @torch.no_grad
     @beartype
     def predict(self, data: TensorDict) -> torch.Tensor:
+        """Pass the data through the model."""
         output = self.model.forward(data)
         return torch.nn.functional.softmax(output.predictions, dim=1)
 
     @beartype
     def encode_response(self, response: torch.Tensor) -> list[float]:
+        """Encode the response from the model output."""
         return response.squeeze().tolist()
 
     @beartype
     def batch(self, inputs: list[TensorDict]) -> TensorDict:
+        """Batch the inputs."""
         return torch.stack(inputs, dim=0).squeeze(1)
+
+# ? is this going to be deserialized correctly?
+stash: StashManager = serving.get_input("stash")
+
+Fields = schema(stash)
+
+class Request(pydantic.BaseModel):
+    """A request to the model."""
+    name: str
+    fields: Fields # type: ignore
 
 
 if __name__ == "__main__":
-    api = API(stash=stash, host="localhost", port=7000)
+    
+    # I feel like there should be a better way to collect these inputs, perhaps a dictionary?
+    port: int = serving.get_input("port")
+    connection: str = serving.get_input("redis")
+    n_workers: int = serving.get_input("n_workers")
+    max_batch_size: int = serving.get_input("max_batch_size")
 
-    server = ls.LitServer(lit_api=api, accelerator="auto", track_requests=True, max_batch_size=2, workers_per_device=4)
+    server = ls.LitServer(
+        Deployment(stash=stash, connection=connection),
+        accelerator="auto",
+        track_requests=True,
+        max_batch_size=max_batch_size,
+        workers_per_device=n_workers,
+    )
 
-    server.run(port=1243, generate_client_file=False)
+    server.run(port=port, generate_client_file=False)

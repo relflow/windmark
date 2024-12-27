@@ -679,7 +679,7 @@ class SequenceModule(lit.LightningModule):
 
             assert os.path.exists(datapath)
 
-        self.info = partial(self.log, on_step=False, on_epoch=True, batch_size=self.params.batch_size)
+        self.info = partial(self.log, on_step=False, on_epoch=True, sync_dist=True, batch_size=self.params.batch_size)
 
         self.example_input_array = mock(params=params, manager=manager)
         self.flops_per_batch = measure_flops(self, lambda: self.forward(self.example_input_array))
@@ -718,7 +718,7 @@ class SequenceModule(lit.LightningModule):
             predictions=predictions,
         )
 
-    def configure_optimizers(self) -> torch.optim.Optimizer:
+    def configure_optimizers(self) -> tuple[list[torch.optim.Optimizer], list[torch.optim.lr_scheduler._LRScheduler]]:
         """
         Configures the optimizer and scheduler for training the model.
 
@@ -774,7 +774,7 @@ class SequenceModule(lit.LightningModule):
                 split=split,
             )
 
-            self.pipes[strata] = Shuffle(dataset, buffer_size=1024) if stage == "train" else dataset
+            self.pipes[strata] = Shuffle(dataset, buffer_size=512) if stage == "train" else dataset
 
     def teardown(self, stage: str):
         """

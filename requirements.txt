@@ -2,7 +2,7 @@
 #    uv pip compile pyproject.toml --python-platform linux
 adlfs==2024.12.0
     # via flytekit
-aiobotocore==2.16.0
+aiobotocore==2.16.1
     # via s3fs
 aiofiles==24.1.0
     # via union
@@ -52,7 +52,7 @@ backports-tarfile==1.2.0
     # via jaraco-context
 beartype==0.19.0
     # via windmark (pyproject.toml)
-botocore==1.35.81
+botocore==1.35.88
     # via aiobotocore
 cachetools==5.5.0
     # via google-auth
@@ -60,15 +60,16 @@ certifi==2024.12.14
     # via
     #   httpcore
     #   httpx
+    #   kubernetes
     #   requests
     #   sentry-sdk
 cffi==1.17.1
     # via
     #   azure-datalake-store
     #   cryptography
-charset-normalizer==3.4.0
+charset-normalizer==3.4.1
     # via requests
-click==8.1.7
+click==8.1.8
     # via
     #   flytekit
     #   rich-click
@@ -100,6 +101,8 @@ docker-pycreds==0.4.0
     # via wandb
 docstring-parser==0.16
     # via flytekit
+durationpy==0.9
+    # via kubernetes
 faker==33.1.0
     # via windmark (pyproject.toml)
 fastapi==0.115.6
@@ -108,11 +111,11 @@ filelock==3.16.1
     # via
     #   torch
     #   triton
-flyteidl==1.14.0
+flyteidl==1.14.1
     # via
     #   flytekit
     #   union
-flytekit==1.14.2
+flytekit==1.14.3
     # via
     #   windmark (pyproject.toml)
     #   union
@@ -147,6 +150,7 @@ google-auth==2.37.0
     #   google-auth-oauthlib
     #   google-cloud-core
     #   google-cloud-storage
+    #   kubernetes
 google-auth-oauthlib==1.2.1
     # via gcsfs
 google-cloud-core==2.4.1
@@ -213,7 +217,7 @@ jeepney==0.8.0
     # via
     #   keyring
     #   secretstorage
-jinja2==3.1.4
+jinja2==3.1.5
     # via torch
 jmespath==1.0.1
     # via botocore
@@ -223,13 +227,15 @@ jsonlines==4.0.0
     # via flytekit
 jsonpickle==4.0.1
     # via flytekit
-keyring==25.5.0
+keyring==25.6.0
     # via
     #   flytekit
     #   union
+kubernetes==31.0.0
+    # via windmark (pyproject.toml)
 libvalkey==4.0.1
     # via valkey
-lightning==2.5.0
+lightning==2.5.0.post0
     # via windmark (pyproject.toml)
 lightning-utilities==0.11.9
     # via
@@ -294,7 +300,7 @@ mypy-extensions==1.0.0
     # via typing-inspect
 networkx==3.4.2
     # via torch
-numpy==2.2.0
+numpy==2.2.1
     # via
     #   windmark (pyproject.toml)
     #   pandas
@@ -333,7 +339,11 @@ nvidia-nvjitlink-cu12==12.6.85
 nvidia-nvtx-cu12==12.1.105
     # via torch
 oauthlib==3.2.2
-    # via requests-oauthlib
+    # via
+    #   kubernetes
+    #   requests-oauthlib
+obstore==0.2.0
+    # via union-runtime
 omegaconf==2.3.0
     # via hydra-core
 packaging==24.2
@@ -350,7 +360,7 @@ platformdirs==4.3.6
     # via
     #   textual
     #   wandb
-polars==1.17.1
+polars==1.18.0
     # via windmark (pyproject.toml)
 portalocker==2.10.1
     # via msal-extensions
@@ -405,6 +415,7 @@ python-dateutil==2.9.0.post0
     #   botocore
     #   croniter
     #   faker
+    #   kubernetes
     #   pandas
 python-dotenv==1.0.1
     # via uvicorn
@@ -412,7 +423,7 @@ python-json-logger==3.2.1
     # via flytekit
 pytimeparse==1.1.8
     # via flytekit
-pytorch-lightning==2.5.0
+pytorch-lightning==2.5.0.post0
     # via lightning
 pytz==2024.2
     # via
@@ -421,6 +432,7 @@ pytz==2024.2
 pyyaml==6.0.2
     # via
     #   flytekit
+    #   kubernetes
     #   lightning
     #   omegaconf
     #   pytorch-lightning
@@ -436,11 +448,14 @@ requests==2.32.3
     #   gcsfs
     #   google-api-core
     #   google-cloud-storage
+    #   kubernetes
     #   msal
     #   requests-oauthlib
     #   wandb
 requests-oauthlib==2.0.0
-    # via google-auth-oauthlib
+    # via
+    #   google-auth-oauthlib
+    #   kubernetes
 rich==13.9.4
     # via
     #   windmark (pyproject.toml)
@@ -472,6 +487,7 @@ six==1.17.0
     # via
     #   azure-core
     #   docker-pycreds
+    #   kubernetes
     #   python-dateutil
 smmap==5.0.1
     # via gitdb
@@ -494,7 +510,7 @@ torch==2.3.0
     #   pytorch-lightning
     #   tensordict
     #   torchmetrics
-torchmetrics==1.6.0
+torchmetrics==1.6.1
     # via
     #   windmark (pyproject.toml)
     #   lightning
@@ -535,13 +551,16 @@ uc-micro-py==1.0.3
     # via linkify-it-py
 union==0.1.117
     # via windmark (pyproject.toml)
+union-runtime==0.1.6
+    # via windmark (pyproject.toml)
 unionai-actor==0.1.5
     # via union
-urllib3==2.2.3
+urllib3==2.3.0
     # via
     #   botocore
     #   docker
     #   flytekit
+    #   kubernetes
     #   requests
     #   sentry-sdk
 uvicorn==0.34.0
@@ -554,6 +573,8 @@ wandb==0.19.1
     # via windmark (pyproject.toml)
 watchfiles==1.0.3
     # via uvicorn
+websocket-client==1.8.0
+    # via kubernetes
 websockets==14.1
     # via uvicorn
 wrapt==1.17.0

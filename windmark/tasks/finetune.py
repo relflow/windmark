@@ -71,6 +71,7 @@ def finetune_sequence_encoder(
             LearningRateMonitor(logging_interval="step"),
             checkpointer,
         ],
+        limit_train_batches=params.n_finetune_steps,
     )
 
     trainer.fit(module)

@@ -10,14 +10,13 @@ from orchestration import environments
 
 # FIXME this should be extended to include other validation checks
 
-
 @environments.proc
 def compare_sequence_lengths(
     lifestreams: fl.FlyteDirectory,
     field: FieldRequest,
     sequence_id: str,
     event_id: str,
-):
+) -> bool:
     """
     Compares the lengths of the inputs and indices in the given lifestreams.
 
@@ -31,8 +30,6 @@ def compare_sequence_lengths(
     lifestreams.download()
 
     print(f'- validating field "{field.name}"')
-    print(f'- event_id "{event_id}"')
-    print(f'- sequence_id "{sequence_id}"')
 
     path = Path(lifestreams.path)
 
@@ -44,3 +41,5 @@ def compare_sequence_lengths(
         sequence_id=sequence_id,
         event_id=event_id,
     )
+
+    return True

@@ -2,16 +2,14 @@
 
 from typing import Annotated
 
-import union
 import flytekit as fl
 
 from core.constructs.general import Hyperparameters
 from core.constructs.managers import SystemManager, StashManager
+from orchestration.artifact import StashArtifact
 from orchestration import environments
 
-
-StashArtifact = union.Artifact(name="Windmark Model State")
-
+# TODO also add model results
 
 @environments.lite
 def stash_model_state(
@@ -24,7 +22,7 @@ def stash_model_state(
     Stash state required to reproduce a model.
 
     Args:
-        model (fl.FlyteFile): The model file to pretrain.
+        checkpoint (fl.FlyteFile): The model file to pretrain.
         manager (SystemManager): The system state manager.
         params (Hyperparameters): The hyperparameters for pretraining.
         label (str): The name for the experiment.
@@ -34,4 +32,5 @@ def stash_model_state(
 
     stash = StashManager(checkpoint=checkpoint, manager=manager, params=params, label=label)
 
-    return StashArtifact.create_from([stash])
+    # FIXME for whatever reason I need to use a list here
+    return StashArtifact.create_from([stash], label=label)

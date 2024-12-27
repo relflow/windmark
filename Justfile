@@ -15,7 +15,7 @@ publish:
 # run training pipeline
 train: && clean
   @echo "JUST running model training pipeline"
-  @uv run windmark/__main__.py
+  @uv run windmark
 
 # reset pyflyte cache
 reset:
@@ -59,7 +59,3 @@ client:
 debug: && clean
   @echo "JUST debugging model training workflow"
   @uv run windmark data=debug model=debug
-
-upload:
-  @echo "JUST uploading ledger to S3"
-  @uv run union run --remote windmark/workflows/upload.py upload

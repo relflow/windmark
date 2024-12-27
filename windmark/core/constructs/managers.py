@@ -308,6 +308,9 @@ class SampleManager(pydantic.BaseModel):
             AssertionError: If the sample rate exceeds 1.0 for any subset during pretraining or finetuning.
         """
         n_events = self.task.balancer.n_events
+        
+        # add some wiggle remove, because we will round down later to prevent desync events during multi-GPU training
+        BUFFER = 1.5
 
         def warn(mode: str, n_steps: int, split: str):
             return f"There not enough observations to create {n_steps} batches for split '{split}' during {mode}."
@@ -315,7 +318,7 @@ class SampleManager(pydantic.BaseModel):
         # expected finetuning steps per epoch
         pretraining: dict[str, float] = {}
         for subset in ["training", "validating", "testing"]:
-            sample_rate = (self.n_pretrain_steps * self.batch_size) / (self.split[subset] * n_events)
+            sample_rate = (self.n_pretrain_steps * self.batch_size * BUFFER) / (self.split[subset] * n_events)
             assert sample_rate < 1.0, warn(mode="pretraining", n_steps=self.n_pretrain_steps, split=subset)
             pretraining[subset] = sample_rate
 
@@ -326,7 +329,7 @@ class SampleManager(pydantic.BaseModel):
         # expected finetuning steps per epoch
         finetuning: dict[str, float] = {}
         for subset in ["training", "validating", "testing"]:
-            sample_rate = (self.n_finetune_steps * self.batch_size) / (self.split[subset] * n_targets)
+            sample_rate = (self.n_finetune_steps * self.batch_size * BUFFER) / (self.split[subset] * n_targets)
             assert sample_rate < 1.0, warn(mode="finetuning", n_steps=self.n_finetune_steps, split=subset)
             finetuning[subset] = sample_rate
 

@@ -7,10 +7,10 @@ from orchestration import environments
 @environments.lite(cache=False)
 def create_experiment_label() -> str:
     """
-    Generates a new label.
+    Generates a new experiment label.
 
     Returns:
-        str: The generated label in the format "address".
+        str: The generated experiment label in the format.
     """
 
     fake = Faker()

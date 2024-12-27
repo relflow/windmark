@@ -21,7 +21,7 @@ def predict_sequence_encoder(
     params: Hyperparameters,
     manager: SystemManager,
     label: str,
-) -> fl.FlyteFile:
+) -> fl.FlyteDirectory:
     """
     Predicts the sequence using an encoder model.
 
@@ -33,7 +33,7 @@ def predict_sequence_encoder(
         label (str): The name for the experiment.
 
     Returns:
-        fl.FlyteFile: Model score predictions
+        fl.FlyteDirectory: Model score predictions
     """
 
     lifestreams.download()
@@ -46,14 +46,14 @@ def predict_sequence_encoder(
     torch.multiprocessing.set_sharing_strategy("file_system")
 
     module = SequenceModule.load_from_checkpoint(
-        checkpoint_path=str(checkpoint.path),
-        datapath=str(lifestreams.path),
+        checkpoint_path=str(checkpoint),
+        datapath=str(lifestreams),
         params=params,
         manager=manager,
         mode="inference",
     )
 
-    out = fl.FlyteFile.new("predictions.parquet")
+    out = fl.FlyteDirectory.new("predictions")
 
     trainer = Trainer(
         logger=WandbLogger(project="windmark", name=label),

@@ -155,7 +155,7 @@ class DynamicCategoryField(TensorField):
 
         choices = list(manager.levelsets[field].keys())
 
-        return Annotated[str, Field(description=f"Category from {field.name}", choices=choices)]
+        return Annotated[str|None, Field(description=f"Dynamic Category from {field.name}", choices=choices)]
 
 
 @FieldInterface.register(FieldType.Category)
@@ -261,6 +261,23 @@ class StaticCategoryField(TensorField):
         value = random.choice(levels)
 
         return cls.new(values=value, field=field, params=params, manager=manager)
+    
+    @classmethod
+    def get_annotation(cls, manager: SystemManager, field: FieldRequest) -> TypeVar:
+        """
+        Gets the annotation for the static category field.
+
+        Args:
+            manager (SystemManager): The system manager.
+            field (FieldRequest): The field request.
+
+        Returns:
+            TypeVar: The annotation for the static category field.
+        """
+
+        choices = list(manager.levelsets[field].keys())
+
+        return Annotated[str|None, Field(description=f"Static Category from {field.name}", choices=choices)]
 
 
 @FieldInterface.register(FieldType.Entities)
@@ -361,7 +378,7 @@ class DynamicEntityField(TensorField):
             TypeVar: The annotation for the dynamic entity field.
         """
 
-        return Annotated[str, Field(description=f"Entity from {field.name}")]
+        return Annotated[str|None, Field(description=f"Entity from {field.name}")]
 
 
 @FieldInterface.register(FieldType.Numbers)
@@ -451,7 +468,7 @@ class DynamicNumberField(TensorField):
             TypeVar: The annotation for the dynamic number field.
         """
 
-        return Annotated[float | int, Field(description=f"Number from {field.name}")]
+        return Annotated[float | int, Field(description=f"Dynamic Number from {field.name}")]
 
 
 @FieldInterface.register(FieldType.Number)
@@ -570,6 +587,20 @@ class StaticNumberField(TensorField):
 
         return cls.new(values=value, field=field, params=params, manager=manager)
 
+    @classmethod
+    def get_annotation(cls, manager: SystemManager, field: FieldRequest) -> TypeVar:
+        """
+        Gets the annotation for the static number field.
+
+        Args:
+            manager (SystemManager): The system manager.
+            field (FieldRequest): The field request.
+
+        Returns:
+            TypeVar: The annotation for the static number field.
+        """
+
+        return Annotated[float | int, Field(description=f"Static Number from {field.name}")]
 
 @FieldInterface.register(FieldType.Quantiles)
 @tensorclass
@@ -613,7 +644,7 @@ class DynamicQuantileField(TensorField):
             TypeVar: The annotation for the dynamic quantile field.
         """
 
-        return Annotated[float | int, Field(description=f"Quantile from {field.name}")]
+        return Annotated[float | int | None, Field(description=f"Dynamic Quantile from {field.name}")]
 
 
 @FieldInterface.register(FieldType.Quantile)
@@ -635,6 +666,21 @@ class StaticQuantileField(TensorField):
     prune = StaticNumberField.prune
     postprocess = StaticNumberField.postprocess
     mock = StaticNumberField.mock
+    
+    @classmethod
+    def get_annotation(cls, manager: SystemManager, field: FieldRequest) -> TypeVar:
+        """
+        Gets the annotation for the static quantile field.
+
+        Args:
+            manager (SystemManager): The system manager.
+            field (FieldRequest): The field request.
+
+        Returns:
+            TypeVar: The annotation for the static quantile field.
+        """
+
+        return Annotated[float | int | None, Field(description=f"Static Quantile from {field.name}")]
 
 
 @FieldInterface.register(FieldType.Timestamps)
@@ -753,4 +799,4 @@ class DynamicTemporalField(TensorField):
             TypeVar: The annotation for the dynamic temporal field.
         """
 
-        return Annotated[str, Field(description=f"Temporal from {field.name}")]
+        return Annotated[str|None, Field(description=f"Temporal from {field.name}")]

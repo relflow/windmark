@@ -8,8 +8,8 @@ import os
 from typing import Iterator
 from typing_extensions import TypedDict
 
+import flytekit as fl
 import aiohttp
-from omegaconf import DictConfig
 from hydra import compose, initialize
 import polars as pl
 
@@ -18,19 +18,16 @@ from core.constructs.managers import StructureManager
 
 class Request(TypedDict):
     name: str
-    fields: dict[str, str | int | float]
+    fields: dict[str, str | int | float | None]
 
 
-def sample(manifest: DictConfig) -> Iterator[Request]:
-    datapath = Path(manifest.data.path)
+def sample(schema: StructureManager, lifestreams: fl.FlyteFile) -> Iterator[Request]:
 
-    shards = [file for file in os.listdir(datapath) if file.endswith("ndjson")]
-
-    schema = StructureManager.new(**manifest.data.structure)
+    shards = [file for file in os.listdir(lifestreams) if file.endswith("ndjson")]
 
     names = [field.name for field in schema.fields]
 
-    sequences = pl.read_ndjson(datapath / random.choice(shards)).iter_slices(1)
+    sequences = pl.read_ndjson(lifestreams / random.choice(shards)).iter_slices(1)
 
     for sequence in sequences:
         index = sequence.get_column(schema.sequence_id).item()
@@ -38,13 +35,8 @@ def sample(manifest: DictConfig) -> Iterator[Request]:
         events = sequence.select(*names).explode(pl.all()).iter_slices(1)
 
         for event in events:
+
             values, *_ = event.to_dicts()
-
-            for key, value in values.items():
-                fieldtype = schema[key].fieldtype
-                if (fieldtype.lower() in ["categories", "entities"]) and (value is None):
-                    values[key] = "[UNK]"
-
             yield dict(name=index, fields=values)
 
 
@@ -54,21 +46,20 @@ async def fetch(session, url, request):
         # print(f"Response: {text}")
 
 
-async def main():
-    config = Path(os.getcwd()) / "windmark" / "config"
-    cwd = Path(os.path.realpath(__file__)).parent
-
-    with initialize(version_base=None, config_path=os.path.relpath(config, cwd)):
-        manifest = compose(config_name="config")
+async def request(
+    schema: StructureManager,
+    lifestreams: fl.FlyteFile,
+    deployment: str
+):
 
     count = 0
     start = time.time()
 
     async with aiohttp.ClientSession() as session:
         tasks = []
-        for request in sample(manifest):
+        for request in sample(schema=schema, lifestreams=lifestreams):
             count += 1
-            task = fetch(session, "http://127.0.0.1:1243/predict", request)
+            task = fetch(session, f"{deployment}/predict", request)
             tasks.append(task)
 
         await asyncio.gather(*tasks)
@@ -81,4 +72,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(request())

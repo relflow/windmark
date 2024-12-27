@@ -1,7 +1,7 @@
-n_pretrain_steps: 128
+n_pretrain_steps: 256
 n_finetune_steps: 64
-n_context: 80
-batch_size: 256
+n_context: 96
+batch_size: 108
 d_field: 64
 max_pretrain_epochs: 1024
 max_finetune_epochs: 2048

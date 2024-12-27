@@ -20,7 +20,7 @@ def train(
     # lifestreams: fl.FlyteDirectory,
     schema: StructureManager,
     params: Hyperparameters,
-) -> fl.FlyteFile:
+) -> fl.FlyteDirectory:
     """
     Trains a model using the provided data and hyperparameters.
 

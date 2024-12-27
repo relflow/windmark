@@ -1,6 +1,6 @@
-#import "@preview/unequivocal-ams:0.1.0": ams-article
+#import "@preview/unequivocal-ams:0.1.2": ams-article
 
-#import "@preview/codly:0.2.0": *
+#import "@preview/codly:1.1.1": *
 
 #set raw(lang:"python")
 
@@ -48,7 +48,7 @@
 ))
 
 
-#codly(display-icon: false, zebra-color: white)
+#codly(display-icon: false)
 
 == Problem Statement
 
