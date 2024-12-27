@@ -72,11 +72,11 @@ class Deployment(ls.LitAPI):
 
     """A deployment of the model."""
 
-    def __init__(self, stash: StashManager, connection: str) -> None:
+    def __init__(self, stash: StashManager, connection: valkey.Valkey) -> None:
         """Initialize the deployment."""
 
         self.stash: StashManager = stash
-        self.connection: str = connection
+        self.db: valkey.Valkey = connection
         self.limit: int = stash.params.n_context
         self.fieldnames: list[str] = [field.name for field in stash.manager.structure.fields]
         self.device: torch.device | None = None
@@ -95,10 +95,6 @@ class Deployment(ls.LitAPI):
         )
 
         self.model.to(device)
-        
-        host, port = self.connection.split(":")
-
-        self.db = valkey.Valkey(host=host, port=int(port), decode_responses=True)
 
     @beartype
     def decode_request(self, request: "Request") -> TensorDict:
@@ -143,9 +139,14 @@ if __name__ == "__main__":
     
     # I feel like there should be a better way to collect these inputs, perhaps a dictionary?
     port: int = serving.get_input("port")
-    connection: str = serving.get_input("redis")
     n_workers: int = serving.get_input("n_workers")
     max_batch_size: int = serving.get_input("max_batch_size")
+    
+    connection = valkey.Valkey(
+        host=serving.get_input("valkey-host"),
+        port=serving.get_input("valkey-port"),
+        password=serving.get_input("valkey-password"),
+    )
 
     server = ls.LitServer(
         Deployment(stash=stash, connection=connection),

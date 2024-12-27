@@ -30,8 +30,6 @@ def create_unique_levels_from_lifestream(lifestreams: fl.FlyteDirectory, field: 
 
     lifestreams.download()
 
-    print(f'- creating state manager for field "{field.name}"')
-
     path = Path(lifestreams.path)
 
     results: list[Counter] = multithread(process=count, key=field.name, path=path)

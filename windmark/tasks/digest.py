@@ -31,8 +31,6 @@ def create_digest_centroids_from_lifestream(
     if field.type not in [FieldType.Number, FieldType.Numbers, FieldType.Quantiles, FieldType.Quantile]:
         return None
 
-    print(f'- creating state manager for field "{field.name}"')
-
     lifestreams.download()
 
     path = Path(lifestreams.path)

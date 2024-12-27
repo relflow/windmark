@@ -75,7 +75,7 @@ class ParquetBatchWriter(callbacks.BasePredictionWriter):
 
         if self.writer is None:
             self.schema = table.schema
-            self.writer = pq.ParquetWriter(self.path / f"rank-{trainer.local_rank}.parquet", self.schema)
+            self.writer = pq.ParquetWriter(f"{self.path}/rank-{trainer.local_rank}.parquet", self.schema)
 
         self.writer.write_table(table)
 

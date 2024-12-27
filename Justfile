@@ -1,3 +1,5 @@
+export ENABLE_UNION_SERVING := "1"
+
 _help:
   @just --list
 
@@ -17,11 +19,6 @@ train: && clean
   @echo "JUST running model training pipeline"
   @uv run windmark
 
-# reset pyflyte cache
-reset:
-  @echo "JUST resetting flyte local cache"
-  @uv run pyflyte local-cache clear
-
 # run model explorer TUI
 explore:
   @echo "JUST running data explorer TUI"
@@ -30,7 +27,6 @@ explore:
 # clean up temporary files
 clean:
   @echo "JUST cleaning up wandb and hydra outputs"
-  @rm -rf wandb
   @rm -rf outputs
 
 # sync pyproject.toml and freeze dependencies
@@ -39,21 +35,15 @@ sync:
   @uv sync
   @uv pip compile pyproject.toml > requirements.txt --python-platform linux
 
-# start valkey database
-valkey:
-  @echo "JUST starting up local Valkey database"
-  @sudo docker pull bitnami/valkey:latest
-  @sudo docker run -e VALKEY_PORT_NUMBER=7000 -e ALLOW_EMPTY_PASSWORD=yes -p 7000:7000 bitnami/valkey:latest
-
 # start model deployment
 serve:
   @echo "JUST serving model deployment"
-  @uv run windmark/inference/serve.py
+  @uv run union deploy apps --project windmark --domain development windmark/inference/apps.py
 
 # submit events to deployment
-client:
-  @echo "JUST sending mock events to model deployment"
-  @uv run windmark/inference/client.py
+# client:
+#   @echo "JUST sending mock events to model deployment"
+#   @uv run windmark/inference/client.py
 
 # run model training in debug mode
 debug: && clean
