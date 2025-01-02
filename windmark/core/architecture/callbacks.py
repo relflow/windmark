@@ -23,7 +23,6 @@ class ParquetBatchWriter(callbacks.BasePredictionWriter):
     """
 
     def __init__(self, path: os.PathLike):
-
         super().__init__("batch")
 
         self.path: os.PathLike = path
@@ -112,7 +111,7 @@ class ThawedFinetuning(callbacks.BaseFinetuning):
         Args:
             pl_module (lit.LightningModule): The LightningModule instance.
         """
-        
+
         self.freeze(
             [
                 pl_module.modular_field_embedder,
@@ -132,23 +131,31 @@ class ThawedFinetuning(callbacks.BaseFinetuning):
             epoch (int): The current epoch.
             optimizer (torch.optim.Optimizer): The optimizer used for training.
         """
-        if epoch == self.transition:
-            modules = [
-                pl_module.modular_field_embedder,
-                pl_module.dynamic_field_encoder,
-                pl_module.event_encoder,
-            ]
 
-            self.unfreeze_and_add_param_group(
-                modules=modules,
-                optimizer=optimizer,
-                train_bn=True,
+        modules = [pl_module.decision_head]
+
+        if len(pl_module.manager.structure.static) != 0:
+            modules.append(pl_module.static_field_decoder)
+
+        if epoch == self.transition:
+            modules.extend(
+                [
+                    pl_module.modular_field_embedder,
+                    pl_module.dynamic_field_encoder,
+                    pl_module.event_encoder,
+                ]
             )
+
+        self.unfreeze_and_add_param_group(
+            modules=modules,
+            optimizer=optimizer,
+            train_bn=True,
+        )
 
 
 class FrozenPretraining(callbacks.BaseFinetuning):
     """
-    Callback class for performing thawed finetuning during training.
+    Freeze unnecessary modules during pretraining. This is required for effective DDP.
     """
 
     def freeze_before_training(self, pl_module: lit.LightningModule):
@@ -160,18 +167,17 @@ class FrozenPretraining(callbacks.BaseFinetuning):
         """
 
         modules = [pl_module.decision_head]
-        
+
         if len(pl_module.manager.structure.static) == 0:
             modules.append(pl_module.static_field_decoder)
-        
+
         self.freeze(modules)
 
     def finetune_function(self, pl_module: lit.LightningModule, epoch: int, optimizer: torch.optim.Optimizer):
-
         pass
 
+
 class Debugger(callbacks.Callback):
-    
     """
     Callback class for debugging the training loop. Nice to have around but safe to remove.
     """

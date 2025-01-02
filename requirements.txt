@@ -31,12 +31,16 @@ anyio==4.7.0
     #   httpx
     #   starlette
     #   watchfiles
+arrow==1.3.0
+    # via isoduration
 async-timeout==5.0.1
     # via valkey
 attrs==24.3.0
     # via
     #   aiohttp
     #   jsonlines
+    #   jsonschema
+    #   referencing
 azure-core==1.32.0
     # via
     #   adlfs
@@ -52,8 +56,17 @@ backports-tarfile==1.2.0
     # via jaraco-context
 beartype==0.19.0
     # via windmark (pyproject.toml)
+boto3==1.35.88
+    # via neptune
 botocore==1.35.88
-    # via aiobotocore
+    # via
+    #   aiobotocore
+    #   boto3
+    #   s3transfer
+bravado==11.0.3
+    # via neptune
+bravado-core==6.1.1
+    # via bravado
 cachetools==5.5.0
     # via google-auth
 certifi==2024.12.14
@@ -72,6 +85,7 @@ charset-normalizer==3.4.1
 click==8.1.8
     # via
     #   flytekit
+    #   neptune
     #   rich-click
     #   union
     #   uvicorn
@@ -119,6 +133,8 @@ flytekit==1.14.3
     # via
     #   windmark (pyproject.toml)
     #   union
+fqdn==1.5.1
+    # via jsonschema
 frozenlist==1.5.0
     # via
     #   aiohttp
@@ -133,12 +149,16 @@ fsspec==2024.12.0
     #   s3fs
     #   torch
     #   union
+future==1.0.0
+    # via neptune
 gcsfs==2024.12.0
     # via flytekit
 gitdb==4.0.11
     # via gitpython
 gitpython==3.1.43
-    # via wandb
+    # via
+    #   neptune
+    #   wandb
 google-api-core==2.24.0
     # via
     #   google-cloud-core
@@ -196,6 +216,7 @@ idna==3.10
     # via
     #   anyio
     #   httpx
+    #   jsonschema
     #   requests
     #   yarl
 importlib-metadata==8.5.0
@@ -203,8 +224,12 @@ importlib-metadata==8.5.0
     #   flytekit
     #   keyring
     #   union
+importlib-resources==6.4.5
+    # via swagger-spec-validator
 isodate==0.7.2
     # via azure-storage-blob
+isoduration==20.11.0
+    # via jsonschema
 jaraco-classes==3.4.0
     # via keyring
 jaraco-context==6.0.1
@@ -220,13 +245,25 @@ jeepney==0.8.0
 jinja2==3.1.5
     # via torch
 jmespath==1.0.1
-    # via botocore
+    # via
+    #   boto3
+    #   botocore
 joblib==1.4.2
     # via flytekit
 jsonlines==4.0.0
     # via flytekit
 jsonpickle==4.0.1
     # via flytekit
+jsonpointer==3.0.0
+    # via jsonschema
+jsonref==1.1.0
+    # via bravado-core
+jsonschema==4.23.0
+    # via
+    #   bravado-core
+    #   swagger-spec-validator
+jsonschema-specifications==2024.10.1
+    # via jsonschema
 keyring==25.6.0
     # via
     #   flytekit
@@ -273,6 +310,8 @@ mdit-py-plugins==0.4.2
     # via markdown-it-py
 mdurl==0.1.2
     # via markdown-it-py
+monotonic==1.6
+    # via bravado
 more-itertools==10.5.0
     # via
     #   jaraco-classes
@@ -289,8 +328,11 @@ msal==1.31.1
 msal-extensions==1.2.0
     # via azure-identity
 msgpack==1.1.0
-    # via flytekit
-msgspec==0.18.6
+    # via
+    #   bravado
+    #   bravado-core
+    #   flytekit
+msgspec==0.19.0
     # via windmark (pyproject.toml)
 multidict==6.1.0
     # via
@@ -298,6 +340,8 @@ multidict==6.1.0
     #   yarl
 mypy-extensions==1.0.0
     # via typing-inspect
+neptune==1.13.0
+    # via windmark (pyproject.toml)
 networkx==3.4.2
     # via torch
 numpy==2.2.1
@@ -341,6 +385,7 @@ nvidia-nvtx-cu12==12.1.105
 oauthlib==3.2.2
     # via
     #   kubernetes
+    #   neptune
     #   requests-oauthlib
 obstore==0.2.0
     # via union-runtime
@@ -352,10 +397,15 @@ packaging==24.2
     #   lightning
     #   lightning-utilities
     #   marshmallow
+    #   neptune
     #   pytorch-lightning
     #   torchmetrics
 pandas==2.2.3
-    # via pytdigest
+    # via
+    #   neptune
+    #   pytdigest
+pillow==11.0.0
+    # via neptune
 platformdirs==4.3.6
     # via
     #   textual
@@ -383,7 +433,9 @@ protobuf==5.29.2
 protoc-gen-openapiv2==0.0.1
     # via flyteidl
 psutil==6.1.1
-    # via wandb
+    # via
+    #   neptune
+    #   wandb
 pyarrow==18.1.0
     # via windmark (pyproject.toml)
 pyasn1==0.6.1
@@ -407,12 +459,17 @@ pygments==2.18.0
     #   mpire
     #   rich
 pyjwt==2.10.1
-    # via msal
+    # via
+    #   msal
+    #   neptune
 pytdigest==0.1.4
     # via windmark (pyproject.toml)
 python-dateutil==2.9.0.post0
     # via
+    #   arrow
     #   botocore
+    #   bravado
+    #   bravado-core
     #   croniter
     #   faker
     #   kubernetes
@@ -427,22 +484,32 @@ pytorch-lightning==2.5.0.post0
     # via lightning
 pytz==2024.2
     # via
+    #   bravado-core
     #   croniter
     #   pandas
 pyyaml==6.0.2
     # via
+    #   bravado
+    #   bravado-core
     #   flytekit
     #   kubernetes
     #   lightning
     #   omegaconf
     #   pytorch-lightning
+    #   swagger-spec-validator
     #   union
     #   uvicorn
     #   wandb
+referencing==0.35.1
+    # via
+    #   jsonschema
+    #   jsonschema-specifications
 requests==2.32.3
     # via
     #   azure-core
     #   azure-datalake-store
+    #   bravado
+    #   bravado-core
     #   docker
     #   flytekit
     #   gcsfs
@@ -450,12 +517,18 @@ requests==2.32.3
     #   google-cloud-storage
     #   kubernetes
     #   msal
+    #   neptune
     #   requests-oauthlib
     #   wandb
 requests-oauthlib==2.0.0
     # via
     #   google-auth-oauthlib
     #   kubernetes
+    #   neptune
+rfc3339-validator==0.1.4
+    # via jsonschema
+rfc3986-validator==0.1.1
+    # via jsonschema
 rich==13.9.4
     # via
     #   windmark (pyproject.toml)
@@ -467,10 +540,16 @@ rich-click==1.8.5
     # via
     #   flytekit
     #   union
+rpds-py==0.22.3
+    # via
+    #   jsonschema
+    #   referencing
 rsa==4.9
     # via google-auth
 s3fs==2024.12.0
     # via flytekit
+s3transfer==0.10.4
+    # via boto3
 secretstorage==3.3.3
     # via keyring
 sentry-sdk==2.19.2
@@ -483,12 +562,20 @@ setuptools==75.6.0
     # via
     #   lightning-utilities
     #   wandb
+simplejson==3.19.3
+    # via
+    #   bravado
+    #   bravado-core
 six==1.17.0
     # via
     #   azure-core
+    #   bravado
+    #   bravado-core
     #   docker-pycreds
     #   kubernetes
+    #   neptune
     #   python-dateutil
+    #   rfc3339-validator
 smmap==5.0.1
     # via gitdb
 sniffio==1.3.1
@@ -497,6 +584,10 @@ starlette==0.41.3
     # via fastapi
 statsd==4.0.1
     # via flytekit
+swagger-spec-validator==3.0.4
+    # via
+    #   bravado-core
+    #   neptune
 sympy==1.13.3
     # via torch
 tensordict==0.4.0
@@ -522,22 +613,27 @@ tqdm==4.67.1
     #   pytorch-lightning
 triton==2.3.0
     # via torch
+types-python-dateutil==2.9.0.20241206
+    # via arrow
 typing-extensions==4.12.2
     # via
     #   anyio
     #   azure-core
     #   azure-identity
     #   azure-storage-blob
+    #   bravado
     #   faker
     #   fastapi
     #   flytekit
     #   lightning
     #   lightning-utilities
     #   mashumaro
+    #   neptune
     #   pydantic
     #   pydantic-core
     #   pytorch-lightning
     #   rich-click
+    #   swagger-spec-validator
     #   textual
     #   torch
     #   typing-inspect
@@ -549,18 +645,21 @@ tzdata==2024.2
     # via pandas
 uc-micro-py==1.0.3
     # via linkify-it-py
-union==0.1.117
+union==0.1.119
     # via windmark (pyproject.toml)
-union-runtime==0.1.6
+union-runtime==0.1.7
     # via windmark (pyproject.toml)
 unionai-actor==0.1.5
     # via union
+uri-template==1.3.0
+    # via jsonschema
 urllib3==2.3.0
     # via
     #   botocore
     #   docker
     #   flytekit
     #   kubernetes
+    #   neptune
     #   requests
     #   sentry-sdk
 uvicorn==0.34.0
@@ -573,8 +672,12 @@ wandb==0.19.1
     # via windmark (pyproject.toml)
 watchfiles==1.0.3
     # via uvicorn
+webcolors==24.11.1
+    # via jsonschema
 websocket-client==1.8.0
-    # via kubernetes
+    # via
+    #   kubernetes
+    #   neptune
 websockets==14.1
     # via uvicorn
 wrapt==1.17.0

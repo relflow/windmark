@@ -38,7 +38,7 @@ sync:
 # start model deployment
 serve:
   @echo "JUST serving model deployment"
-  @uv run union deploy apps --project windmark --domain development windmark/inference/apps.py
+  @uv run union deploy apps --project windmark --domain development windmark/inference/apps.py model
 
 # submit events to deployment
 # client:

@@ -9,23 +9,31 @@ from kubernetes.client.models import (
     V1VolumeMount,
 )
 
-from orchestration.context import TaskEnvironment
+from orchestration.context import Environment
 
 NAME = "windmark"
 
 image = fl.ImageSpec(name=NAME, builder="union", requirements="requirements.txt")
 
-lite = TaskEnvironment(
+attach_shm = fl.PodTemplate(
+    primary_container_name=NAME,
+    pod_spec=V1PodSpec(
+        containers=[V1Container(name=NAME, volume_mounts=[V1VolumeMount(mount_path="/dev/shm", name="dshm")])],
+        volumes=[V1Volume(name="dshm", empty_dir=V1EmptyDirVolumeSource(medium="", size_limit="256Gi"))],
+    ),
+)
+
+lite = Environment(
     container_image=image,
     requests=fl.Resources(mem="2Gi"),
     retries=3,
     cache=True,
     cache_version="v0.0.3",
-    secret_requests=[fl.Secret(key="WANDB_API_KEY")],
-    environment={
-        "POLARS_ALLOW_FORKING_THREAD": "1",
-        "PYTHONUNBUFFERED": "1"
-    },
+    secret_requests=[
+        fl.Secret(key="WANDB_API_KEY"),
+        fl.Secret(key="NEPTUNE_API_KEY"),
+    ],
+    environment={"POLARS_ALLOW_FORKING_THREAD": "1", "PYTHONUNBUFFERED": "1"},
 )
 
 
@@ -38,13 +46,6 @@ proc = lite.extend(
 lab = proc.extend(
     retries=1,
     cache_ignore_input_vars=("label",),
-    requests=fl.Resources(gpu="8", cpu="92", mem="256Gi"),
-    
-    pod_template=fl.PodTemplate(
-        primary_container_name=NAME,
-        pod_spec=V1PodSpec(
-            containers=[V1Container(name=NAME, volume_mounts=[V1VolumeMount(mount_path="/dev/shm", name="dshm")])],
-            volumes=[V1Volume(name="dshm", empty_dir=V1EmptyDirVolumeSource(medium="", size_limit="256Gi"))],
-        ),
-    ),
+    requests=fl.Resources(gpu="8", cpu="92", mem="308Gi"),
+    pod_template=attach_shm,
 )

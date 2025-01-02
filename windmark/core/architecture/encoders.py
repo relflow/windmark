@@ -734,6 +734,7 @@ class SequenceModule(lit.LightningModule):
             max_epochs = self.params.max_pretrain_epochs
 
         optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, self.parameters()), lr=lr)
+
         scheduler = LinearWarmupCosineAnnealingLR(
             optimizer=optimizer,
             warmup_epochs=self.params.n_epochs_frozen,

@@ -2,10 +2,9 @@
 
 import flytekit as fl
 import torch
-import wandb
 from lightning.pytorch import Trainer
-from lightning.pytorch.callbacks import EarlyStopping, ModelCheckpoint, RichProgressBar, LearningRateMonitor
-from lightning.pytorch.loggers.wandb import WandbLogger
+from lightning.pytorch.callbacks import EarlyStopping, ModelCheckpoint, RichProgressBar
+from lightning.pytorch.loggers import NeptuneLogger
 
 from core.architecture.encoders import SequenceModule
 from core.constructs.managers import SystemManager
@@ -14,7 +13,7 @@ from core.architecture.callbacks import ThawedFinetuning
 from orchestration import environments
 
 
-@environments.lab
+@environments.lab(cache=False, cache_serialize=False, cache_ignore_input_vars=None)
 def finetune_sequence_encoder(
     lifestreams: fl.FlyteDirectory,
     checkpoint: fl.FlyteFile,
@@ -39,8 +38,7 @@ def finetune_sequence_encoder(
     lifestreams.download()
     checkpoint.download()
 
-    key = fl.current_context().secrets.get(key="WANDB_API_KEY")
-    wandb.login(key=key)
+    key = fl.current_context().secrets.get(key="NEPTUNE_API_KEY")
 
     torch.set_float32_matmul_precision("medium")
     torch.multiprocessing.set_sharing_strategy("file_system")
@@ -59,7 +57,7 @@ def finetune_sequence_encoder(
     )
 
     trainer = Trainer(
-        logger=WandbLogger(project="windmark", name=label),
+        logger=NeptuneLogger(project="grantham/windmark", name=label, api_key=key),
         precision="bf16-mixed",
         gradient_clip_val=params.gradient_clip_val,
         max_epochs=params.max_finetune_epochs,
@@ -68,10 +66,10 @@ def finetune_sequence_encoder(
             RichProgressBar(),
             EarlyStopping(monitor="finetune-validate/loss", patience=params.patience),
             ThawedFinetuning(transition=params.n_epochs_frozen),
-            LearningRateMonitor(logging_interval="step"),
             checkpointer,
         ],
         limit_train_batches=params.n_finetune_steps,
+        accumulate_grad_batches=4,
     )
 
     trainer.fit(module)

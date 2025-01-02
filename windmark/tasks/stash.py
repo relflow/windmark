@@ -1,6 +1,7 @@
 # Copyright Grantham Taylor.
 
 from typing import Annotated
+import json
 
 import flytekit as fl
 
@@ -11,13 +12,14 @@ from orchestration import environments
 
 # TODO also add model results
 
+
 @environments.lite
 def stash_model_state(
     checkpoint: fl.FlyteFile,
     manager: SystemManager,
     params: Hyperparameters,
     label: str,
-) -> Annotated[list[StashManager], StashArtifact]:
+) -> Annotated[str, StashArtifact]:
     """
     Stash state required to reproduce a model.
 
@@ -32,5 +34,8 @@ def stash_model_state(
 
     stash = StashManager(checkpoint=checkpoint, manager=manager, params=params, label=label)
 
-    # FIXME for whatever reason I need to use a list here
-    return StashArtifact.create_from([stash], label=label)
+    serialized = json.dumps(stash.model_dump(mode="json"))
+
+    print(serialized)
+
+    return StashArtifact.create_from(serialized, label=label)
