@@ -1,15 +1,15 @@
-n_pretrain_steps: 256
+n_pretrain_steps: 64
 n_finetune_steps: 64
 n_context: 96
 batch_size: 108
 d_field: 64
-max_pretrain_epochs: 16
-max_finetune_epochs: 16
+max_pretrain_epochs: 4
+max_finetune_epochs: 4
 n_layers_field_encoder: 1
 n_heads_field_encoder: 8
-n_layers_event_encoder: 12
+n_layers_event_encoder: 4
 n_heads_event_encoder: 8
-n_epochs_frozen: 4
+n_epochs_frozen: 2
 learning_rate: 0.000025
 quantile_smoothing: 1.0
 n_quantiles: 64
@@ -24,4 +24,4 @@ head_shape_log_base: 4
 gradient_clip_val: 0.25
 interpolation_rate: 0.12
 learning_rate_dampener: 0.2
-predict_only_sequence_end: false
+predict_only_sequence_end: true

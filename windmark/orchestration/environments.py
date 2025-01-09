@@ -28,11 +28,8 @@ lite = Environment(
     requests=fl.Resources(mem="2Gi"),
     retries=3,
     cache=True,
-    cache_version="v0.0.3",
-    secret_requests=[
-        fl.Secret(key="WANDB_API_KEY"),
-        fl.Secret(key="NEPTUNE_API_KEY"),
-    ],
+    cache_version="v0.0.4",
+    secret_requests=[fl.Secret(key="NEPTUNE_API_KEY")],
     environment={"POLARS_ALLOW_FORKING_THREAD": "1", "PYTHONUNBUFFERED": "1"},
 )
 
@@ -44,7 +41,7 @@ proc = lite.extend(
 
 
 lab = proc.extend(
-    retries=1,
+    retries=0,
     cache_ignore_input_vars=("label",),
     requests=fl.Resources(gpu="8", cpu="92", mem="308Gi"),
     pod_template=attach_shm,

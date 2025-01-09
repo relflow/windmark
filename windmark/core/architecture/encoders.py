@@ -630,7 +630,8 @@ def dataloader(self: "SequenceModule", strata: str) -> DataLoader:
         num_workers=n_workers,
         persistent_workers=True,
         collate_fn=collate,
-        pin_memory=True,
+        # pin_memory=True,
+        pin_memory=False,
         drop_last=False,
     )
 

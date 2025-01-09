@@ -13,7 +13,7 @@ from core.architecture.callbacks import ThawedFinetuning
 from orchestration import environments
 
 
-@environments.lab(cache=False, cache_serialize=False, cache_ignore_input_vars=None)
+@environments.lab
 def finetune_sequence_encoder(
     lifestreams: fl.FlyteDirectory,
     checkpoint: fl.FlyteFile,

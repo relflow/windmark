@@ -26,7 +26,7 @@ explore:
 
 # clean up temporary files
 clean:
-  @echo "JUST cleaning up wandb and hydra outputs"
+  @echo "JUST cleaning up hydra outputs"
   @rm -rf outputs
 
 # sync pyproject.toml and freeze dependencies

@@ -19,7 +19,7 @@ def stash_model_state(
     manager: SystemManager,
     params: Hyperparameters,
     label: str,
-) -> Annotated[str, StashArtifact]:
+) -> Annotated[fl.FlyteFile, StashArtifact]:
     """
     Stash state required to reproduce a model.
 
@@ -35,7 +35,10 @@ def stash_model_state(
     stash = StashManager(checkpoint=checkpoint, manager=manager, params=params, label=label)
 
     serialized = json.dumps(stash.model_dump(mode="json"))
+    
+    ff = fl.FlyteFile.new("stash.json")
+    
+    with open(ff.path, "w") as file:
+        file.write(serialized)
 
-    print(serialized)
-
-    return StashArtifact.create_from(serialized, label=label)
+    return StashArtifact.create_from(ff, label=label)

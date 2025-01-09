@@ -1,7 +1,7 @@
-# import json
 from typing import TypeVar, Iterator
+import json
+import os
 
-# from hydra.utils import instantiate
 import pydantic
 import valkey
 import litserve as ls
@@ -124,8 +124,9 @@ class Deployment(ls.LitAPI):
         """Batch the inputs."""
         return torch.stack(inputs, dim=0).squeeze(1)
 
-# ? is this going to be deserialized correctly?
-stash: StashManager = serving.get_input("stash")
+with open(os.getenv("STASH_FILENAME"), "r") as file:
+
+    stash = StashManager(json.load(file))
 
 Fields = schema(stash)
 
@@ -137,19 +138,19 @@ class Request(pydantic.BaseModel):
 
 if __name__ == "__main__":
     
-    # I feel like there should be a better way to collect these inputs, perhaps a dictionary?
-    port: int = serving.get_input("port")
-    n_workers: int = serving.get_input("n_workers")
-    max_batch_size: int = serving.get_input("max_batch_size")
     
-    connection = valkey.Valkey(
-        host=serving.get_input("valkey-host"),
-        port=serving.get_input("valkey-port"),
-        password=serving.get_input("valkey-password"),
-    )
+    connection = valkey.Valkey(**json.loads(serving.get_input("connection")))
+    
+    deployment = Deployment(stash=stash, connection=connection)
+
+    stash.checkpoint.download()
+
+    port = int(serving.get_input("port"))
+    n_workers = int(serving.get_input("n_workers"))
+    max_batch_size = int(serving.get_input("max_batch_size"))
 
     server = ls.LitServer(
-        Deployment(stash=stash, connection=connection),
+        deployment,
         accelerator="auto",
         track_requests=True,
         max_batch_size=max_batch_size,

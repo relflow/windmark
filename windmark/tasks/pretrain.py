@@ -1,7 +1,6 @@
 # Copyright Grantham Taylor.
 
 import flytekit as fl
-import wandb
 import torch
 from lightning.pytorch import Trainer
 from lightning.pytorch.callbacks import (
@@ -10,7 +9,7 @@ from lightning.pytorch.callbacks import (
     RichProgressBar,
     LearningRateMonitor,
 )
-from lightning.pytorch.loggers.wandb import WandbLogger
+from lightning.pytorch.loggers import NeptuneLogger
 
 from core.architecture.encoders import SequenceModule
 from core.architecture.callbacks import FrozenPretraining
@@ -41,8 +40,7 @@ def pretrain_sequence_encoder(
 
     lifestreams.download()
 
-    key = fl.current_context().secrets.get(key="WANDB_API_KEY")
-    wandb.login(key=key)
+    key = fl.current_context().secrets.get(key="NEPTUNE_API_KEY")
 
     torch.set_float32_matmul_precision("medium")
     torch.multiprocessing.set_sharing_strategy("file_system")
@@ -54,14 +52,13 @@ def pretrain_sequence_encoder(
     )
 
     trainer = Trainer(
-        logger=WandbLogger(project="windmark", name=label),
+        logger=NeptuneLogger(project="grantham/windmark", name=label, api_key=key),
         precision="bf16-mixed",
         gradient_clip_val=params.gradient_clip_val,
         max_epochs=params.max_pretrain_epochs,
         callbacks=[
             RichProgressBar(),
             EarlyStopping(monitor="pretrain-total-validate/loss", patience=params.patience),
-            LearningRateMonitor(logging_interval="step"),
             FrozenPretraining(),
             checkpointer,
         ],
