@@ -1,3 +1,3 @@
 import union
 
-StashArtifact = union.Artifact(name="Windmark Model State", partition_keys=["label"])
+StashArtifact = union.Artifact(name="windmark", partition_keys=["label"])

@@ -167,3 +167,5 @@ outputs
 wandb/
 
 stash/*.json
+
+.DS_Store

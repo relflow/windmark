@@ -13,7 +13,12 @@ from orchestration.context import Environment
 
 NAME = "windmark"
 
-image = fl.ImageSpec(name=NAME, builder="union", requirements="requirements.txt")
+image = fl.ImageSpec(
+    name="image",
+    builder="union",
+    requirements="uv.lock",
+    apt_packages=['build-essential'],
+)
 
 attach_shm = fl.PodTemplate(
     primary_container_name=NAME,
@@ -28,7 +33,7 @@ lite = Environment(
     requests=fl.Resources(mem="2Gi"),
     retries=3,
     cache=True,
-    cache_version="v0.0.4",
+    cache_version="v0.0.5",
     secret_requests=[fl.Secret(key="NEPTUNE_API_KEY")],
     environment={"POLARS_ALLOW_FORKING_THREAD": "1", "PYTHONUNBUFFERED": "1"},
 )

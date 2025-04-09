@@ -3,13 +3,13 @@ n_finetune_steps: 64
 n_context: 96
 batch_size: 96
 d_field: 64
-max_pretrain_epochs: 512
-max_finetune_epochs: 512
+max_pretrain_epochs: 8
+max_finetune_epochs: 8
 n_layers_field_encoder: 1
 n_heads_field_encoder: 8
 n_layers_event_encoder: 12
 n_heads_event_encoder: 8
-n_epochs_frozen: 32
+n_epochs_frozen: 4
 learning_rate: 0.0000005
 quantile_smoothing: 1.0
 n_quantiles: 64

@@ -1,4 +1,5 @@
 version = 1
+revision = 1
 requires-python = ">=3.11"
 resolution-markers = [
     "python_full_version < '3.12' and sys_platform != 'linux'",
@@ -488,7 +489,7 @@ name = "click"
 version = "8.1.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "platform_system == 'Windows'" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b9/2e/0090cbf739cee7d23781ad4b89a9894a41538e4fcf4c31dcdd705b78eb8b/click-8.1.8.tar.gz", hash = "sha256:ed53c9d8990d83c2a27deae68e4ee337473f6330c040a31d4225c9574d16096a", size = 226593 }
 wheels = [
@@ -784,21 +785,21 @@ wheels = [
 
 [[package]]
 name = "flyteidl"
-version = "1.14.1"
+version = "1.15.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "googleapis-common-protos" },
     { name = "protobuf" },
     { name = "protoc-gen-openapiv2" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ba/09/205ca437cc6507dc66471bd274f1d67fdc2f92a24cbb9aaace0d188bd0f8/flyteidl-1.14.1.tar.gz", hash = "sha256:6b1ad3f92a045ced37a4e613ae92545d839a8bb76550bd017bbfc3ae2760c8c7", size = 127962 }
+sdist = { url = "https://files.pythonhosted.org/packages/e2/22/3fc44174691db5fb83ae06e79c94876c823b4c868e53c9c50901bedc6f42/flyteidl-1.15.1.tar.gz", hash = "sha256:6b5df2a7ff6dbb3a6d483c3d17a446487139347ebc0fd6919788fd64b1562854", size = 128835 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/72/b5/97dfcf0fd45e1d4a84eeace18dadcafdff6dffd4e62973b711136bd59a88/flyteidl-1.14.1-py3-none-any.whl", hash = "sha256:bde0d9a0bb5a60f5210d08923b3c9db929ebd8805f11e55338e736b458287486", size = 219065 },
+    { url = "https://files.pythonhosted.org/packages/84/85/5771a57ac834ab510310b483fea98403ab75439c0c29ae3e0fdbbbe5d546/flyteidl-1.15.1-py3-none-any.whl", hash = "sha256:f1a37876b820d36e3fc324011adbb35d6e20a9a8a4afa41e01babc5a19d6a1c9", size = 220009 },
 ]
 
 [[package]]
 name = "flytekit"
-version = "1.14.3"
+version = "1.15.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "adlfs" },
@@ -838,9 +839,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/65/bb/a42beb203f433075a3dec20de135a3804d376d90e5686fa7cdfae7bf804b/flytekit-1.14.3.tar.gz", hash = "sha256:27c4475202b8285cbc2e802919d8553fb7c1b891e3c22bc3f03e1b1c0598e0d6", size = 517087 }
+sdist = { url = "https://files.pythonhosted.org/packages/25/5a/418bcb00ed7070ede18e40709bf1765728dc1eba71d08afdf44c34f8e5a3/flytekit-1.15.3.tar.gz", hash = "sha256:bffce90f78aa54b9612988c10aa7202a1628259d1bbca4f3f73be8af5ba7f10a", size = 555977 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0b/04/402f7b00b6f073ea5dc09b3ef7b101b4f621d78092d2ea6f2bf19bbe5296/flytekit-1.14.3-py3-none-any.whl", hash = "sha256:d9c02761604837a695c6d70601500e945abafe4686c030779417fdfccc089643", size = 621405 },
+    { url = "https://files.pythonhosted.org/packages/77/37/3cb80ab9465d2e662c7387f1a6341dc1d4c18497efafae9d05669935cff1/flytekit-1.15.3-py3-none-any.whl", hash = "sha256:13798ec5477a2ef429f75c3f39fd94adfdf73ff0cd5a953b06e7836192276687", size = 656474 },
 ]
 
 [[package]]
@@ -1293,7 +1294,7 @@ name = "ipykernel"
 version = "6.29.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "appnope", marker = "platform_system == 'Darwin'" },
+    { name = "appnope", marker = "sys_platform == 'darwin'" },
     { name = "comm" },
     { name = "debugpy" },
     { name = "ipython" },
@@ -1890,8 +1891,8 @@ name = "mkl"
 version = "2021.4.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "intel-openmp" },
-    { name = "tbb" },
+    { name = "intel-openmp", marker = "sys_platform != 'linux'" },
+    { name = "tbb", marker = "sys_platform != 'linux'" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ce/c6/892fe3bc91e811b78e4f85653864f2d92541d5e5c306b0cb3c2311e9ca64/mkl-2021.4.0-py2.py3-none-win32.whl", hash = "sha256:439c640b269a5668134e3dcbcea4350459c4a8bc46469669b2d67e07e3d330e8", size = 129048357 },
@@ -1922,7 +1923,7 @@ version = "2.10.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pygments" },
-    { name = "pywin32", marker = "platform_system == 'Windows'" },
+    { name = "pywin32", marker = "sys_platform == 'win32'" },
     { name = "tqdm" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/3a/93/80ac75c20ce54c785648b4ed363c88f148bf22637e10c9863db4fbe73e74/mpire-2.10.2.tar.gz", hash = "sha256:f66a321e93fadff34585a4bfa05e95bd946cf714b442f51c529038eb45773d97", size = 271270 }
@@ -2249,7 +2250,7 @@ name = "nvidia-cudnn-cu12"
 version = "8.9.2.26"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "nvidia-cublas-cu12" },
+    { name = "nvidia-cublas-cu12", marker = "sys_platform == 'linux'" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ff/74/a2e2be7fb83aaedec84f391f082cf765dfb635e7caa9b49065f73e4835d8/nvidia_cudnn_cu12-8.9.2.26-py3-none-manylinux1_x86_64.whl", hash = "sha256:5ccb288774fdfb07a7e7025ffec286971c06d8d7b4fb162525334616d7629ff9", size = 731725872 },
@@ -2276,9 +2277,9 @@ name = "nvidia-cusolver-cu12"
 version = "11.4.5.107"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "nvidia-cublas-cu12" },
-    { name = "nvidia-cusparse-cu12" },
-    { name = "nvidia-nvjitlink-cu12" },
+    { name = "nvidia-cublas-cu12", marker = "sys_platform == 'linux'" },
+    { name = "nvidia-cusparse-cu12", marker = "sys_platform == 'linux'" },
+    { name = "nvidia-nvjitlink-cu12", marker = "sys_platform == 'linux'" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/bc/1d/8de1e5c67099015c834315e333911273a8c6aaba78923dd1d1e25fc5f217/nvidia_cusolver_cu12-11.4.5.107-py3-none-manylinux1_x86_64.whl", hash = "sha256:8a7ec542f0412294b15072fa7dab71d31334014a69f953004ea7a118206fe0dd", size = 124161928 },
@@ -2289,7 +2290,7 @@ name = "nvidia-cusparse-cu12"
 version = "12.1.0.106"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "nvidia-nvjitlink-cu12" },
+    { name = "nvidia-nvjitlink-cu12", marker = "sys_platform == 'linux'" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/65/5b/cfaeebf25cd9fdec14338ccb16f6b2c4c7fa9163aefcf057d86b9cc248bb/nvidia_cusparse_cu12-12.1.0.106-py3-none-manylinux1_x86_64.whl", hash = "sha256:f3b50f42cf363f86ab21f720998517a659a48131e8d538dc02f8768237bd884c", size = 195958278 },
@@ -2300,7 +2301,6 @@ name = "nvidia-nccl-cu12"
 version = "2.20.5"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c1/bb/d09dda47c881f9ff504afd6f9ca4f502ded6d8fc2f572cacc5e39da91c28/nvidia_nccl_cu12-2.20.5-py3-none-manylinux2014_aarch64.whl", hash = "sha256:1fc150d5c3250b170b29410ba682384b14581db722b2531b0d8d33c595f33d01", size = 176238458 },
     { url = "https://files.pythonhosted.org/packages/4b/2a/0a131f572aa09f741c30ccd45a8e56316e8be8dfc7bc19bf0ab7cfef7b19/nvidia_nccl_cu12-2.20.5-py3-none-manylinux2014_x86_64.whl", hash = "sha256:057f6bf9685f75215d0c53bf3ac4a10b3e6578351de307abad9e18a99182af56", size = 176249402 },
 ]
 
@@ -2309,7 +2309,6 @@ name = "nvidia-nvjitlink-cu12"
 version = "12.4.127"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/02/45/239d52c05074898a80a900f49b1615d81c07fceadd5ad6c4f86a987c0bc4/nvidia_nvjitlink_cu12-12.4.127-py3-none-manylinux2014_aarch64.whl", hash = "sha256:4abe7fef64914ccfa909bc2ba39739670ecc9e820c83ccc7a6ed414122599b83", size = 20552510 },
     { url = "https://files.pythonhosted.org/packages/ff/ff/847841bacfbefc97a00036e0fce5a0f086b640756dc38caea5e1bb002655/nvidia_nvjitlink_cu12-12.4.127-py3-none-manylinux2014_x86_64.whl", hash = "sha256:06b3b9b25bf3f8af351d664978ca26a16d2c5127dbd53c0497e28d1fb9611d57", size = 21066810 },
 ]
 
@@ -2332,33 +2331,48 @@ wheels = [
 
 [[package]]
 name = "obstore"
-version = "0.2.0"
+version = "0.3.0"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/05/3e/78c59914f5537868940c7b947af2633b99a14a8c0ac093afa8f69dc0ef20/obstore-0.2.0-cp311-cp311-macosx_10_12_x86_64.whl", hash = "sha256:cc177506a309c17e429a0cf7b5aa2d9194d745e5f0a9ea3418846f7aa6f416d0", size = 3310561 },
-    { url = "https://files.pythonhosted.org/packages/93/70/0aecea82a35259ea837cfa7274abb7246bb34fcc22b02306ff1ec72045df/obstore-0.2.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:98ad46092c44e28396e4387660e8306129aa60068f7b03c02d7f871333e5e5d5", size = 3142440 },
-    { url = "https://files.pythonhosted.org/packages/80/b9/9007cb6b0e0c528af3f4f3c18553bc64a38d17ef0062cc0b0fedeea7fea7/obstore-0.2.0-cp311-cp311-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:4610a38801cf87d341a2bf2451a06fe8f52322b4344c933f0626262637f625ac", size = 3338284 },
-    { url = "https://files.pythonhosted.org/packages/cb/70/0bca12d0c758576f0aaff49a99a1b8b14ecbf481fdc099f6d03a0a067ada/obstore-0.2.0-cp311-cp311-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:68eb1c965e69657f5e5b5c92425172c4caa06d6a4b99226c36dce140fa3a6789", size = 3376720 },
-    { url = "https://files.pythonhosted.org/packages/63/22/e7e04681cf596f3ab350fc713c113e82bc79440c7a643ca063154c7a77ac/obstore-0.2.0-cp311-cp311-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:965df133a548a5a4276a846d0cbfa1dc36947aac39bf44c77e1f90764b3e1d53", size = 3605649 },
-    { url = "https://files.pythonhosted.org/packages/13/d1/c2854d2f8fabf45daa6f0690fec7ea91d1d61357d429a42ba3fee4fae447/obstore-0.2.0-cp311-cp311-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:cd0cd5caa194a1f8dca6deb33e4df72ad529ab1ae199a7456c4b66330e9446f5", size = 4296626 },
-    { url = "https://files.pythonhosted.org/packages/07/1f/16e1a5e336161f2f15e80d9a8b624b5e9029ce852f3271410d99a97efe45/obstore-0.2.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d534fc5763cf3360ac3d3feafad87a87930af20a74d3a34cd84c4e5325f6fcb8", size = 3503907 },
-    { url = "https://files.pythonhosted.org/packages/eb/99/e863802dfb46036f48fcfe655bb44d018a16a0ab76bd691826ee18dc2a85/obstore-0.2.0-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:7e57afcb0d73931cacafaa81ed66c39edb4486868449cf49d2e0c0015402bd01", size = 3663676 },
-    { url = "https://files.pythonhosted.org/packages/5a/ab/06294382b76d43bd2274eab36d4999afd5850c85c9b98db27dcdd84a54d7/obstore-0.2.0-cp311-cp311-musllinux_1_2_armv7l.whl", hash = "sha256:4926c205f20c3524867f2519586bdcf03851a15f7d7e05b94b65b3ff5933b046", size = 3627430 },
-    { url = "https://files.pythonhosted.org/packages/ed/e7/da68d86f5648832c20c9d17ef969155241a43ad18bd1a2e3c4ecbb919c62/obstore-0.2.0-cp311-cp311-musllinux_1_2_i686.whl", hash = "sha256:c90aeda8c6dc30134dd93771cbdb9bc86d8bfb89ac80f904b023173dc895a6b5", size = 3440352 },
-    { url = "https://files.pythonhosted.org/packages/d4/a3/137b1e4b1619a6d69a588dead6c31bf3bf5f88e30f669f5bcaca7fa84a74/obstore-0.2.0-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:8f526a0d66378e2f9217653f65c054ff47ee3075b32d5b37da54604bc37396eb", size = 3671323 },
-    { url = "https://files.pythonhosted.org/packages/d1/0c/383a721f9caa731e6508f732ac0abf3fb89b47b7ca58bf25e4b4a05e0ac8/obstore-0.2.0-cp311-none-win_amd64.whl", hash = "sha256:ee7d785201ed0f6d30ba6a1f37824d60c6ec9686a6a48bfd4ec01c8c856ae665", size = 3369818 },
-    { url = "https://files.pythonhosted.org/packages/79/66/e3da7067a8ac198c0aa222b9c95133dbdef71a1f216739ae29a5a6763778/obstore-0.2.0-cp312-cp312-macosx_10_12_x86_64.whl", hash = "sha256:d15741846589f2136f82f7dc785ce2c20ca8c50a7f6200971185f7b1fc9a2762", size = 3312593 },
-    { url = "https://files.pythonhosted.org/packages/c0/f7/a73184647df617a5a0ab0011d018e729b63a6f101fb56c17f4b401a6261e/obstore-0.2.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:28fd141d2cbb448e8b516fbc3a4039e1aaa65c74a8e10f9c86df765a8d64b4bb", size = 3144640 },
-    { url = "https://files.pythonhosted.org/packages/05/7f/96c4dbc4bdc2a618947b6fc2b5cca08641cc5f02025154dc0db5745dc4a2/obstore-0.2.0-cp312-cp312-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:8f690550a18c349367f7a9347c87f8e1b7d3def8e5fdc11e9abb782af94de1d8", size = 3340838 },
-    { url = "https://files.pythonhosted.org/packages/96/af/88278591fdd70efcd038eac6a251d264ce0209ddd83975d593ac316b12a6/obstore-0.2.0-cp312-cp312-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:6930a658e8b0d16db15b9d83c926968b27af5905ad763d821918b206d28cc951", size = 3376800 },
-    { url = "https://files.pythonhosted.org/packages/fa/1b/8ae752862045002b34f8c4ff7a03a37dc09b726cd9092976036c68a54dbe/obstore-0.2.0-cp312-cp312-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:0e66c9a55124d701bbcb4f00fbd36cc347c85782647ddec5dc6159290278372e", size = 3606087 },
-    { url = "https://files.pythonhosted.org/packages/30/fb/ad4110f07db486ea1c31da27b5a1a1cc2cf9721355eac3f47c87d9a06e07/obstore-0.2.0-cp312-cp312-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:17ddf2c3a52c480ad132468d683e0c2f0e857c284d62de5203c12824aa0a185a", size = 4287318 },
-    { url = "https://files.pythonhosted.org/packages/1c/6d/e588dee1820a6a2af7cdc4b3755bc7ac58d6b368b2501fb4744f33561dfe/obstore-0.2.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:aaf91a52d7b04765b6722b19e53bbbf689ef68e4c50adf167edce39b3a8fab74", size = 3504752 },
-    { url = "https://files.pythonhosted.org/packages/1d/8d/454ad48fcd3600188c9713a08e86836b3b2f0aae446f3c40426c01b3732a/obstore-0.2.0-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:1b73121988a3afd22f7a33e37cd414009535006f6e055b1993ed92a65b3d6928", size = 3665410 },
-    { url = "https://files.pythonhosted.org/packages/67/5b/13a7df4193b0875140315b5c7f4dd05b5cb210e090bf118068dae8c6aef4/obstore-0.2.0-cp312-cp312-musllinux_1_2_armv7l.whl", hash = "sha256:9025b0b03b7e22cc398458444267bd32c029ee24eef224df2d9143eca29d138a", size = 3630048 },
-    { url = "https://files.pythonhosted.org/packages/21/60/497008116a5bc833b9c0a0b24ad899ee546c9ddbbe1ca4464982a6d3342b/obstore-0.2.0-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:a71585c9b942f4c36d9e6da2cb7a0d4f369deeccb93722f8dd785a7ee5635c8a", size = 3441464 },
-    { url = "https://files.pythonhosted.org/packages/ba/00/0437244e6d50f373ce6b11941beb95cf64fa884f07dd646f1e996af35305/obstore-0.2.0-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:6e14c99aeb32b636bb8b637d49dc9de9e5d0d52a5301c7c66330d74bf970a89c", size = 3672614 },
-    { url = "https://files.pythonhosted.org/packages/ba/5c/4054b93260cccebe17540f2bc3736fe22177e437c142239e23dc3288c6a5/obstore-0.2.0-cp312-none-win_amd64.whl", hash = "sha256:ad621f07867afa1990b1b21fc66921ddc009dc306f171dda7608ca144dba690c", size = 3378280 },
+    { url = "https://files.pythonhosted.org/packages/e0/6d/97ca496c4312e677e987f47998669372448febf9bc982eced893840d9fa1/obstore-0.3.0-cp311-cp311-macosx_10_12_x86_64.whl", hash = "sha256:98b5d6170783a5facd2b964e0b8f884206a3edf83377e83d41aefc33f569ebd8", size = 3650732 },
+    { url = "https://files.pythonhosted.org/packages/ec/1d/9c7ef04c3692c3a3bfcf9d1f7f0e67a56189d4e9134dcdd9d87e0a2386c9/obstore-0.3.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:faa973b7684c93a2942be414d6fba3fb509982cb30b5522ca9189e075619aaa5", size = 3428041 },
+    { url = "https://files.pythonhosted.org/packages/1a/51/ff9ba1f20c197b1711bdffc9e787df9283ae63aaad2aff892ca58056e4dd/obstore-0.3.0-cp311-cp311-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:48116ed7485f4612bca1b1282b33c262ae65f29f87eb48fca4eae178335f4c67", size = 3623618 },
+    { url = "https://files.pythonhosted.org/packages/4a/2f/3633f4f5372ca0921181f09b8bfefe5804e7e500dc3f29499d6f0f7a8e65/obstore-0.3.0-cp311-cp311-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:5ec5b62f562ec75f183d749ec3a15783924bc1db6668409f6ef3792b92677a0a", size = 3644045 },
+    { url = "https://files.pythonhosted.org/packages/9f/90/0235ebe451240710feb166ed91ef46cbf8e9480177a51a976af7141b5127/obstore-0.3.0-cp311-cp311-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:1ab9b58cfd438cc9f290ed446028c7f2e0181f8b78d4b824911e4ada172b2824", size = 3852549 },
+    { url = "https://files.pythonhosted.org/packages/56/a0/ceb4fa86c86fbb61e7f23ab4f5a25086688605ad2170eabc3059da505629/obstore-0.3.0-cp311-cp311-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:ccfa003d9fce85bce0a52ad9db20a9c155d12436eb117dd00369379955adda45", size = 4609833 },
+    { url = "https://files.pythonhosted.org/packages/8b/c0/d76803e787acd1164df1917fad126b7a5b30093e0b8065213ce506989626/obstore-0.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:a2ab9783ac64d39721276df951d6140a51e97c6cc4fbd089b99a77c9703e6bc6", size = 3759565 },
+    { url = "https://files.pythonhosted.org/packages/d2/05/452f724d1cf469c20834dbd46268ae561acdd96fb3d537c7892c12e3c577/obstore-0.3.0-cp311-cp311-manylinux_2_28_aarch64.whl", hash = "sha256:fec058d4405fad0ce9a18ed63a158270d8eef4555120fcb9fbb411d1241cfba6", size = 3647866 },
+    { url = "https://files.pythonhosted.org/packages/1d/ed/c28a6580b747614df8b714c8289421ce56efd038102f1c39c5a7a2c6aac1/obstore-0.3.0-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:b89bfd4d74d1b6791aa15e37b5c66eb107dd25e8a00f5125d0e2c197e70c6add", size = 3786849 },
+    { url = "https://files.pythonhosted.org/packages/ec/ab/99f1940114ad3b0935781e15918d7c61b7e69d40966a23ad59664271af47/obstore-0.3.0-cp311-cp311-musllinux_1_2_armv7l.whl", hash = "sha256:d956d0588e5dd51d855fe39efa57eb88d901fd6f817c081537e78923135e9960", size = 3830380 },
+    { url = "https://files.pythonhosted.org/packages/42/ee/e44236b685cdd82cd85b11c8f2658631844942bf0a20eda57e5d32c11635/obstore-0.3.0-cp311-cp311-musllinux_1_2_i686.whl", hash = "sha256:24778456bee713254a013337dee4807fc37f576f7a290f78e300820a1436123a", size = 3720505 },
+    { url = "https://files.pythonhosted.org/packages/8f/6e/b41a6cf07da9060a8f11a38e60cd2f4dbc5a4c0f029f53f709ce7c194e15/obstore-0.3.0-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:253a3e4d62113e09d39cb851b8057ccc29006ae1cc71385667d27e8800483f17", size = 3903352 },
+    { url = "https://files.pythonhosted.org/packages/76/cf/b9e7018cd9a571b6ea6ca6f5aa2385dd1d43193574ff6cc2d889d5fae6b0/obstore-0.3.0-cp311-cp311-win_amd64.whl", hash = "sha256:c58463af81892b44097681bc7713adb1c2ccf035ae52804d2923e61503b1a89f", size = 3650317 },
+    { url = "https://files.pythonhosted.org/packages/69/50/78f09069371b4654b9555d14c568c0c06ec43400ba9f172ee6feee80e358/obstore-0.3.0-cp312-cp312-macosx_10_12_x86_64.whl", hash = "sha256:cef0b155664c70a88dfb7e0bd61bfeca1a3004a5ad384c29686614b7df65332e", size = 3656702 },
+    { url = "https://files.pythonhosted.org/packages/da/0d/da22c40928c2def91cdff95358bd82c0076fc9ebd962609eaac08ca71215/obstore-0.3.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:1f2a83f62a8ef4251f77084863041a85e43e3971f9d2d35b51cef22b98208544", size = 3430698 },
+    { url = "https://files.pythonhosted.org/packages/0e/b9/3368905c2824f9024944e45a4acc9a9983f35fa9a6cddf4969071d2a5d00/obstore-0.3.0-cp312-cp312-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:f7b4e3757a40057763804e9526899efc31b3b84792c5a0a59ab8a3fa6b2611a2", size = 3619551 },
+    { url = "https://files.pythonhosted.org/packages/a3/d0/c946739e3856365c5bb0a6d0f98476ee03bf197a63757971ce79a52025d7/obstore-0.3.0-cp312-cp312-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:2d47728c65684e0f1278f479ed365db026822509e62730e166a5f4db391ee40e", size = 3641295 },
+    { url = "https://files.pythonhosted.org/packages/92/7d/208d3f2350014934c04e22f5a98e1713ecc072f4c4d748549bb1827acf88/obstore-0.3.0-cp312-cp312-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:35a7b36b94d4949e0e209324827f72c1dbd426de688687d442130973324fbf14", size = 3846420 },
+    { url = "https://files.pythonhosted.org/packages/5c/d4/bb2eac83803e864ce24cecf0b51817c57e171df3fd95965bf275d3092454/obstore-0.3.0-cp312-cp312-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:aef386827364a10d576f18e99de8620df62f30274234c824e91eec0037df3c65", size = 4620622 },
+    { url = "https://files.pythonhosted.org/packages/d5/25/9258e58b18d8d9c2ec499fac7c8c923fc99edbbf365ae29bae61619c73e7/obstore-0.3.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c9caf1b35b5f81a789752d3a9b257c98f74f5a76116f37b5f64bd254c4c89a93", size = 3758604 },
+    { url = "https://files.pythonhosted.org/packages/ce/13/74485160b68491a8f74bc28a67229750522bea0f079f2079137e1e694458/obstore-0.3.0-cp312-cp312-manylinux_2_28_aarch64.whl", hash = "sha256:ac563c5f2b7dd5966af8d95e3593b2e29fa55adc874dc85e9e5fda3e2f8ced1f", size = 3643396 },
+    { url = "https://files.pythonhosted.org/packages/93/84/d906853eac8107c95bf6fce69fe74dbb78b0ee0b1bc24770c87d0133b0ff/obstore-0.3.0-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:4e4eebc54f418be080aa0bccfce759bcfd74b47207ff792e1245e16de183a69c", size = 3785626 },
+    { url = "https://files.pythonhosted.org/packages/09/79/2ae0d4e95265156b5023e7c9db4c464afe65825987028810c23b597a0a53/obstore-0.3.0-cp312-cp312-musllinux_1_2_armv7l.whl", hash = "sha256:02848f9892e2d88f8c1eab8c721d94dc1ef5d28ec875467409feb1977732c420", size = 3827072 },
+    { url = "https://files.pythonhosted.org/packages/f5/9b/9ac738a9abaf7290fda050bf3f45e0bad056c5213c5f06e82f4111b65764/obstore-0.3.0-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:39b6048c2e93f7c7dd9805c63e3bef7396f4329b59d2b60d6fed626bdfa569c0", size = 3716091 },
+    { url = "https://files.pythonhosted.org/packages/2d/65/d9bcc2736eab28423d641cd0433829d01702824f1cc66494098ad7adad99/obstore-0.3.0-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:d7bf8f021720c80228e5700636b389cb4b4615e2a8e027aa44b7b0701d29f5bb", size = 3904058 },
+    { url = "https://files.pythonhosted.org/packages/7b/c5/dcd328acf55c04ec3013326a1689941c0cdce28baa7aed1f739fd278554f/obstore-0.3.0-cp312-cp312-win_amd64.whl", hash = "sha256:a2a6dfb242518b021afd3202e01f87d085b9a49fa5a03f1612088758027a59bb", size = 3657414 },
+    { url = "https://files.pythonhosted.org/packages/52/9d/8f818e18c878967c6ff316dbf26e8ddd0f56468863b1c09ae3b69eab040b/obstore-0.3.0-cp313-cp313-macosx_10_12_x86_64.whl", hash = "sha256:7871a67f207b43790c290cda61b6b9da3ebf679edc2abdd0f5af6ad025282d03", size = 3656570 },
+    { url = "https://files.pythonhosted.org/packages/2a/b9/629ccdcd03848e8f639b34f775ec3692e1730140d567a295f20920cf4985/obstore-0.3.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:f46c5a7119eac4a0bb148f378bc455a23f442c645a133247af25fd6976f7577f", size = 3430289 },
+    { url = "https://files.pythonhosted.org/packages/e4/f1/91899529ec0b0e8e8404aa15af4dfdb3954564781bb0172ae22aa2e45931/obstore-0.3.0-cp313-cp313-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:3e0cd3dff29875356e855dc829fca73a7ed1fa4b986dc1169c42b7f139d87631", size = 3618865 },
+    { url = "https://files.pythonhosted.org/packages/1d/bb/61bea57996753a6365b637b7bb1341d0b1daa14161a8967295b055550a49/obstore-0.3.0-cp313-cp313-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:86273b8cbcf8834e43607dd8a3dd3a80ce4641d55f06d55979510401e0218b71", size = 3640907 },
+    { url = "https://files.pythonhosted.org/packages/53/4b/093ccf33ed7ef7c9eb357e93ab66f8fce4654dce2bbfa699efa1dac46a02/obstore-0.3.0-cp313-cp313-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:565d05af78b35a8eb74b6e4e1331463063c52d3dfb7b2561f09be84c5dcea256", size = 3846165 },
+    { url = "https://files.pythonhosted.org/packages/4b/04/3f5ab962652ba7277379df81566d5efed094a73390c0863884e34d06a93e/obstore-0.3.0-cp313-cp313-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:df2e2e4bb6e29efaf3c82db0ae19fbc3892481be5570f10d675f1cafad63eb61", size = 4610497 },
+    { url = "https://files.pythonhosted.org/packages/52/02/3e05ed5943e0c5e6ead10114e3f1884498585500267b3ec731bf9377d8a0/obstore-0.3.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:181b4e25af5ab83d9d4f978f1450b262d6701727a3f425d07e01ad7ceba89efd", size = 3757587 },
+    { url = "https://files.pythonhosted.org/packages/3d/3a/b8b87000c9b8fdd58728311b49d07871f93e68f6364e97a3601c19409bb6/obstore-0.3.0-cp313-cp313-manylinux_2_28_aarch64.whl", hash = "sha256:a55713c25ec4f766e788a05ad8929f703b684503513b78a6f0322dbed369fd07", size = 3643810 },
+    { url = "https://files.pythonhosted.org/packages/91/57/022dcddec6acbed86852d8cd30e7c556326c1af24c20b72c22c6a19be9db/obstore-0.3.0-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:424399fae79b422c633c1a54d221eb76365c61d85e5443d452a4154f153f156c", size = 3785073 },
+    { url = "https://files.pythonhosted.org/packages/f2/08/58d0c24907975e07be3bebaaf9a9c5daa80c566257eb7b56529cd112fb27/obstore-0.3.0-cp313-cp313-musllinux_1_2_armv7l.whl", hash = "sha256:f3b9dda3a9886b301713762160f688a70a6bf58f6e7d1d70462dcd7d1e281861", size = 3826435 },
+    { url = "https://files.pythonhosted.org/packages/a5/b1/b9cec6c2cb70c60e30259b3a9ad2a89149d332299ca01580abb18315a882/obstore-0.3.0-cp313-cp313-musllinux_1_2_i686.whl", hash = "sha256:e7e277b900a60420f9da460bee4c0f081e06951d6bb5cce97a4472d26dedee07", size = 3715170 },
+    { url = "https://files.pythonhosted.org/packages/39/34/2c585bab3d2330ffd369f7f22cbb9bfda4168562b001a36440b2e4b21eac/obstore-0.3.0-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:b5e07c9e2ed7ac6e84c7a8c3a0f8549533f02ad9e33c0bd95b70756fd7fd6f10", size = 3903246 },
+    { url = "https://files.pythonhosted.org/packages/80/f2/aecce4f8bb64212151454ca3a9ec4749e08376607fb6c5ad9598e9084903/obstore-0.3.0-cp313-cp313-win_amd64.whl", hash = "sha256:535ffd466c028b3b143762d072e972814b61c5a12f23efd14dbfc42555070346", size = 3657309 },
 ]
 
 [[package]]
@@ -2531,7 +2545,7 @@ name = "portalocker"
 version = "2.10.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pywin32", marker = "platform_system == 'Windows'" },
+    { name = "pywin32", marker = "sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/ed/d3/c6c64067759e87af98cc668c1cc75171347d0f1577fab7ca3749134e3cd4/portalocker-2.10.1.tar.gz", hash = "sha256:ef1bf844e878ab08aee7e40184156e1151f228f103aa5c6bd0724cc330960f8f", size = 40891 }
 wheels = [
@@ -2668,8 +2682,6 @@ version = "6.1.1"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/1f/5a/07871137bb752428aa4b659f910b399ba6f291156bdea939be3e96cae7cb/psutil-6.1.1.tar.gz", hash = "sha256:cf8496728c18f2d0b45198f06895be52f36611711746b7f30c464b422b50e2f5", size = 508502 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d2/d4/8095b53c4950f44dc99b8d983b796f405ae1f58d80978fcc0421491b4201/psutil-6.1.1-cp27-none-win32.whl", hash = "sha256:6d4281f5bbca041e2292be3380ec56a9413b790579b8e593b1784499d0005dac", size = 246855 },
-    { url = "https://files.pythonhosted.org/packages/b1/63/0b6425ea4f2375988209a9934c90d6079cc7537847ed58a28fbe30f4277e/psutil-6.1.1-cp27-none-win_amd64.whl", hash = "sha256:c777eb75bb33c47377c9af68f30e9f11bc78e0f07fbf907be4a5d70b2fe5f030", size = 250110 },
     { url = "https://files.pythonhosted.org/packages/61/99/ca79d302be46f7bdd8321089762dd4476ee725fce16fc2b2e1dbba8cac17/psutil-6.1.1-cp36-abi3-macosx_10_9_x86_64.whl", hash = "sha256:fc0ed7fe2231a444fc219b9c42d0376e0a9a1a72f16c5cfa0f68d19f1a0663e8", size = 247511 },
     { url = "https://files.pythonhosted.org/packages/0b/6b/73dbde0dd38f3782905d4587049b9be64d76671042fdcaf60e2430c6796d/psutil-6.1.1-cp36-abi3-macosx_11_0_arm64.whl", hash = "sha256:0bdd4eab935276290ad3cb718e9809412895ca6b5b334f5a9111ee6d9aff9377", size = 248985 },
     { url = "https://files.pythonhosted.org/packages/17/38/c319d31a1d3f88c5b79c68b3116c129e5133f1822157dd6da34043e32ed6/psutil-6.1.1-cp36-abi3-manylinux_2_12_i686.manylinux2010_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:b6e06c20c05fe95a3d7302d74e7097756d4ba1247975ad6905441ae1b5b66003", size = 284488 },
@@ -3644,21 +3656,21 @@ dependencies = [
     { name = "filelock" },
     { name = "fsspec" },
     { name = "jinja2" },
-    { name = "mkl", marker = "platform_system == 'Windows'" },
+    { name = "mkl", marker = "sys_platform == 'win32'" },
     { name = "networkx" },
-    { name = "nvidia-cublas-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
-    { name = "nvidia-cuda-cupti-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
-    { name = "nvidia-cuda-nvrtc-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
-    { name = "nvidia-cuda-runtime-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
-    { name = "nvidia-cudnn-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
-    { name = "nvidia-cufft-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
-    { name = "nvidia-curand-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
-    { name = "nvidia-cusolver-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
-    { name = "nvidia-cusparse-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
-    { name = "nvidia-nccl-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
-    { name = "nvidia-nvtx-cu12", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
+    { name = "nvidia-cublas-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-cuda-cupti-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-cuda-nvrtc-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-cuda-runtime-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-cudnn-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-cufft-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-curand-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-cusolver-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-cusparse-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-nccl-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
+    { name = "nvidia-nvtx-cu12", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
     { name = "sympy" },
-    { name = "triton", marker = "python_full_version < '3.12' and platform_machine == 'x86_64' and platform_system == 'Linux'" },
+    { name = "triton", marker = "python_full_version < '3.12' and platform_machine == 'x86_64' and sys_platform == 'linux'" },
     { name = "typing-extensions" },
 ]
 wheels = [
@@ -3710,7 +3722,7 @@ name = "tqdm"
 version = "4.67.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "platform_system == 'Windows'" },
+    { name = "colorama", marker = "sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/a8/4b/29b4ef32e036bb34e4ab51796dd745cdba7ed47ad142a9f4a1eb8e0c744d/tqdm-4.67.1.tar.gz", hash = "sha256:f8aef9c52c08c13a65f30ea34f4e5aac3fd1a34959879d7e59e63027286627f2", size = 169737 }
 wheels = [
@@ -3731,7 +3743,7 @@ name = "triton"
 version = "2.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "filelock", marker = "python_full_version < '3.12'" },
+    { name = "filelock", marker = "python_full_version < '3.12' and sys_platform == 'linux'" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/3c/00/84e0006f2025260fa111ddfc66194bd1af731b3ee18e2fd611a00f290b5e/triton-2.3.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:3c3d9607f85103afdb279938fc1dd2a66e4f5999a58eb48a346bd42738f986dd", size = 168079300 },
@@ -3789,7 +3801,7 @@ wheels = [
 
 [[package]]
 name = "union"
-version = "0.1.117"
+version = "0.1.171"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -3803,37 +3815,37 @@ dependencies = [
     { name = "importlib-metadata" },
     { name = "keyring" },
     { name = "mashumaro" },
-    { name = "protobuf", marker = "platform_system == 'Windows'" },
+    { name = "protobuf", marker = "sys_platform == 'win32'" },
     { name = "pyyaml" },
     { name = "rich" },
     { name = "rich-click" },
     { name = "sentry-sdk" },
     { name = "typing-extensions" },
-    { name = "unionai-actor", marker = "platform_machine == 'x86_64' and platform_system == 'Linux'" },
+    { name = "unionai-actor", marker = "platform_machine == 'x86_64' and sys_platform == 'linux'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/df/47/6d8979ff01334ad4d639d2815ef6fb8db7d15d515f0c08a0b0c0c35eb3fe/union-0.1.117.tar.gz", hash = "sha256:fcd1baa8dc1f075b8977b0cfccaea10c7af01856102ecbf53339d054e2b01791", size = 108909 }
+sdist = { url = "https://files.pythonhosted.org/packages/5e/f0/a0e08b1605d12d05e74703250198d9194be4c80f2d10b059d8d461405f45/union-0.1.171.tar.gz", hash = "sha256:d0c308aa8b08ae1f6818854f0dbb1b71cd6e329dbddc0fb1ff2b1e29d03433f1", size = 173604 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0f/f3/a9f61c7d4ad7e6ec35d65fd28dfd5c5a038b797ab7aae4b3a503eb74469e/union-0.1.117-py3-none-any.whl", hash = "sha256:a717630d2eb036b37a4af5db2a00a9b68961d73e6149f32f35b597705f115a5f", size = 151124 },
+    { url = "https://files.pythonhosted.org/packages/17/71/4a3e69cebb1819dc29731b06e1be2326a613a9fd0518d76a7119dc0fc9f1/union-0.1.171-py3-none-any.whl", hash = "sha256:3df71497c1e240af3fdafd46054b12790b445e8b7c7f780cc330edd2bc97a4a2", size = 257878 },
 ]
 
 [[package]]
 name = "union-runtime"
-version = "0.1.6"
+version = "0.1.17"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "obstore" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/66/e6/b16599d13bdefe7a4219709568346bbd7495aba4478a13ac0d80ad8f1530/union_runtime-0.1.6.tar.gz", hash = "sha256:b9cbc8c88fe0ebff06c9b1829abc635223d934a8de67a21e686429bc01d7b449", size = 11249 }
+sdist = { url = "https://files.pythonhosted.org/packages/a1/54/5ffbe3590ab0f53d552eb438e22d513631d97f2b021828d5ecadc4b0d36b/union_runtime-0.1.17.tar.gz", hash = "sha256:384d9fd5e889abd7b35b6792e842fde42f49e2a56f8c6015e25da4c03fe496de", size = 27790 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7d/de/ef2739898c8c0c2961abb98baff70bc4fd34606d96a49be6083bb6d55b1a/union_runtime-0.1.6-py3-none-any.whl", hash = "sha256:02d16a839b6b50d7baba8b06ac239f69bff357545e4ae17da8c07115f81f81f5", size = 13355 },
+    { url = "https://files.pythonhosted.org/packages/1f/f7/19ff91282c6a447db790ac30535aa270fd34baeeea08dd0e2ab81b2d163f/union_runtime-0.1.17-py3-none-any.whl", hash = "sha256:d980fb125916e1a40efd467c85a7c7accf492ba97220db90b0cbd7664173600c", size = 39817 },
 ]
 
 [[package]]
 name = "unionai-actor"
-version = "0.1.5"
+version = "0.1.7"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/80/46/6dc4d730210e313479aa31380ace4a03cf15dd5f400c10ad12e800af0ef6/unionai_actor-0.1.5-cp38-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c52cc53f77e3d83c9ded6cdb0d2c5c30c4b3581cf71f2dfb3536cda54ced552e", size = 1853748 },
+    { url = "https://files.pythonhosted.org/packages/f9/86/b57752d2162b7bb8809512a3ed23c80072da48f4f78bc827af78bdcf5bdf/unionai_actor-0.1.7-cp38-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e85cf0e1c6a58aae25dc54a0da68508fddb9cc1905a023e3df2bd65b48eabbdc", size = 1876395 },
 ]
 
 [[package]]
@@ -4149,7 +4161,7 @@ requires-dist = [
     { name = "aiohttp", specifier = ">=3.11.7" },
     { name = "beartype", specifier = ">=0.17.0" },
     { name = "faker", specifier = ">=24.4.0" },
-    { name = "flytekit", specifier = ">=1.14.3" },
+    { name = "flytekit", specifier = ">=1.15.3" },
     { name = "hydra-core", specifier = ">=1.3.2" },
     { name = "jaxtyping", specifier = ">=0.2.25" },
     { name = "kubernetes", specifier = ">=31.0.0" },
@@ -4168,8 +4180,8 @@ requires-dist = [
     { name = "textual", specifier = ">=0.72.0" },
     { name = "torch", specifier = "==2.3.0" },
     { name = "torchmetrics", specifier = ">=1.3.2" },
-    { name = "union", specifier = ">=0.1.116" },
-    { name = "union-runtime", specifier = ">=0.1.6" },
+    { name = "union", specifier = ">=0.1.171" },
+    { name = "union-runtime", specifier = ">=0.1.17" },
     { name = "valkey", extras = ["libvalkey"], specifier = ">=6.0.2" },
     { name = "wandb", specifier = ">=0.18.3" },
 ]

@@ -8,7 +8,6 @@ import litserve as ls
 from tensordict import TensorDict
 import torch
 from beartype import beartype
-import union_runtime as serving
 
 from core.architecture.embedders import FieldInterface
 from core.architecture.encoders import SequenceModule
@@ -139,15 +138,15 @@ class Request(pydantic.BaseModel):
 if __name__ == "__main__":
     
     
-    connection = valkey.Valkey(**json.loads(serving.get_input("connection")))
+    connection = valkey.Valkey(**json.loads(os.getenv("CONNECTION")))
     
     deployment = Deployment(stash=stash, connection=connection)
 
     stash.checkpoint.download()
 
-    port = int(serving.get_input("port"))
-    n_workers = int(serving.get_input("n_workers"))
-    max_batch_size = int(serving.get_input("max_batch_size"))
+    port = int(os.getenv("MODEL_PORT"))
+    n_workers = int(os.getenv("N_WORKERS"))
+    max_batch_size = int(os.getenv("MAX_BATCH_SIZE"))
 
     server = ls.LitServer(
         deployment,

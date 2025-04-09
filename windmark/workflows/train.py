@@ -12,8 +12,7 @@ from orchestration import environments
 
 @environments.lite
 def fetch() -> fl.FlyteDirectory:
-    return fl.FlyteDirectory.from_source("s3://union-oc-production-demo/windmark/trxns/")
-
+    return fl.FlyteDirectory.from_source("s3://union-oc-production-persistent/trxns/")
 
 @fl.workflow
 def train(
