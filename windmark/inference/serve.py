@@ -8,11 +8,14 @@ import litserve as ls
 from tensordict import TensorDict
 import torch
 from beartype import beartype
+import fsspec
 
-from core.architecture.embedders import FieldInterface
-from core.architecture.encoders import SequenceModule
-from core.constructs.managers import StashManager
-from core.data.operators import transform
+
+
+from windmark.core.architecture.embedders import FieldInterface
+from windmark.core.architecture.encoders import SequenceModule
+from windmark.orchestration.artifact import StashManager
+from windmark.core.data.operators import transform
 
 NULL = "[UNK]"
 
@@ -29,8 +32,80 @@ def schema(stash: StashManager) -> type:
 
     return pydantic.create_model("Fields", **annotations)
 
+with open(os.getenv("STASH_FILENAME"), "r") as file:
 
-def query(request: "Request", deployment: "Deployment") -> Context:
+    stash = StashManager(**json.load(file))
+
+Fields = schema(stash)
+
+class Request(pydantic.BaseModel):
+    """A request to the model."""
+    name: str
+    fields: Fields # type: ignore
+
+
+class Deployment(ls.LitAPI):
+
+    """A deployment of the model."""
+
+    def __init__(self, stash: StashManager) -> None:
+        """Initialize the deployment."""
+        
+        self.db: valkey.Valkey  = valkey.Valkey(
+            host=os.getenv("CONNECTION"),
+            password=os.getenv("PASSWORD")
+        )
+
+        self.stash: StashManager = stash
+        self.limit: int = stash.params.n_context
+        self.fieldnames: list[str] = [field.name for field in stash.manager.structure.fields]
+        self.device: torch.device | None = None
+
+    @beartype
+    def setup(self, device: torch.device|str) -> None:
+        """Setup the deployment."""
+
+        self.device = device
+
+        self.model = SequenceModule.load_from_checkpoint(
+            checkpoint_path="checkpoint.pt",
+            params=self.stash.params,
+            manager=self.stash.manager,
+            mode="inference",
+        )
+
+        self.model.to(device)
+
+    @beartype
+    def decode_request(self, request: Request) -> TensorDict:
+        """Decode a request to the model."""
+
+        # store the request in the database and query the context
+        context = query(request, self)
+
+        # encode context to tensordict of tensorfields
+        # this same function powers the training pipeline
+        return transform(context, self.stash.params, self.stash.manager).to(self.device)
+
+    @torch.no_grad
+    @beartype
+    def predict(self, data: TensorDict) -> torch.Tensor:
+        """Pass the data through the model."""
+        output = self.model.forward(data)
+        return torch.nn.functional.softmax(output.predictions, dim=1)
+
+    @beartype
+    def encode_response(self, response: torch.Tensor) -> list[float]:
+        """Encode the response from the model output."""
+        return response.squeeze().tolist()
+
+    @beartype
+    def batch(self, inputs: list[TensorDict]) -> TensorDict:
+        """Batch the inputs."""
+        return torch.stack(inputs, dim=0).squeeze(1)
+
+
+def query(request: Request, deployment: Deployment) -> Context:
     """Store a request in the database and retrieve the context."""
 
     # replace None values with NULL
@@ -66,83 +141,16 @@ def query(request: "Request", deployment: "Deployment") -> Context:
     
     return context
 
-
-class Deployment(ls.LitAPI):
-
-    """A deployment of the model."""
-
-    def __init__(self, stash: StashManager, connection: valkey.Valkey) -> None:
-        """Initialize the deployment."""
-
-        self.stash: StashManager = stash
-        self.db: valkey.Valkey = connection
-        self.limit: int = stash.params.n_context
-        self.fieldnames: list[str] = [field.name for field in stash.manager.structure.fields]
-        self.device: torch.device | None = None
-
-    @beartype
-    def setup(self, device: torch.device) -> None:
-        """Setup the deployment."""
-
-        self.device = device
-
-        self.model = SequenceModule.load_from_checkpoint(
-            checkpoint_path=self.stash.checkpoint,
-            params=self.stash.params,
-            manager=self.stash.manager,
-            mode="inference",
-        )
-
-        self.model.to(device)
-
-    @beartype
-    def decode_request(self, request: "Request") -> TensorDict:
-        """Decode a request to the model."""
-
-        # store the request in the database and query the context
-        context = query(request, self)
-
-        # encode context to tensordict of tensorfields
-        # this same function powers the training pipeline
-        return transform(context, self.stash.params, self.stash.manager).to(self.device)
-
-    @torch.no_grad
-    @beartype
-    def predict(self, data: TensorDict) -> torch.Tensor:
-        """Pass the data through the model."""
-        output = self.model.forward(data)
-        return torch.nn.functional.softmax(output.predictions, dim=1)
-
-    @beartype
-    def encode_response(self, response: torch.Tensor) -> list[float]:
-        """Encode the response from the model output."""
-        return response.squeeze().tolist()
-
-    @beartype
-    def batch(self, inputs: list[TensorDict]) -> TensorDict:
-        """Batch the inputs."""
-        return torch.stack(inputs, dim=0).squeeze(1)
-
-with open(os.getenv("STASH_FILENAME"), "r") as file:
-
-    stash = StashManager(json.load(file))
-
-Fields = schema(stash)
-
-class Request(pydantic.BaseModel):
-    """A request to the model."""
-    name: str
-    fields: Fields # type: ignore
-
-
 if __name__ == "__main__":
     
-    
-    connection = valkey.Valkey(**json.loads(os.getenv("CONNECTION")))
-    
-    deployment = Deployment(stash=stash, connection=connection)
+    with fsspec.open(stash.checkpoint.path, mode="rb") as s3_file:
+        content = s3_file.read()
 
-    stash.checkpoint.download()
+    with open("checkpoint.pt", "wb") as local_file:
+        local_file.write(content)
+
+    deployment = Deployment(stash=stash)
+
 
     port = int(os.getenv("MODEL_PORT"))
     n_workers = int(os.getenv("N_WORKERS"))
@@ -152,8 +160,13 @@ if __name__ == "__main__":
         deployment,
         accelerator="auto",
         track_requests=True,
+        
         max_batch_size=max_batch_size,
-        workers_per_device=n_workers,
+        # workers_per_device=n_workers,
     )
 
-    server.run(port=port, generate_client_file=False)
+    server.run(
+        port=port,
+        generate_client_file=False,
+        api_server_worker_type="thread"
+    )

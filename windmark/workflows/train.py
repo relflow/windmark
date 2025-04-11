@@ -4,10 +4,10 @@ from functools import partial
 
 import flytekit as fl
 
-import tasks as lib
-from core.constructs.general import Hyperparameters
-from core.constructs.managers import StructureManager
-from orchestration import environments
+import windmark.tasks as lib
+from windmark.core.constructs.general import Hyperparameters
+from windmark.core.constructs.managers import StructureManager
+from windmark.orchestration import environments
 
 
 @environments.lite

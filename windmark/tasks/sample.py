@@ -1,8 +1,8 @@
 # Copyright Grantham Taylor.
 
-from core.constructs.managers import SupervisedTaskManager, SplitManager, SampleManager
-from core.constructs.general import Hyperparameters
-from orchestration import environments
+from windmark.core.constructs.managers import SupervisedTaskManager, SplitManager, SampleManager
+from windmark.core.constructs.general import Hyperparameters
+from windmark.orchestration import environments
 
 
 @environments.lite

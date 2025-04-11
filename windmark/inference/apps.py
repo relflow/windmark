@@ -1,30 +1,32 @@
 import flytekit as fl
 from union.app import App, Input
-import union
+
+from windmark.orchestration.artifact import StashArtifact
 
 NAME = "windmark"
 
 MODEL_PORT = 1243
 MAX_BATCH_SIZE = 4
-N_WORKERS = 2
-CONNECTION = "expert-flounder-44600.upstash.io:6379"
+N_WORKERS = 1
+CONNECTION = "on-collie-11005.upstash.io"
 
 
-StashArtifact = union.Artifact(name="windmark", partition_keys=["label"])
-artifact = StashArtifact.query(label="stewart-river", project="windmark", domain="development")
+artifact = StashArtifact.query(label="walker-lodge", project="windmark", domain="development")
 
 model = App(
     name="model",
     container_image=fl.ImageSpec(
         name="image",
         builder="union",
-        requirements="uv.lock",
+        requirements="requirements.txt",
         apt_packages=['build-essential'],
     ),
-    include=["windmark/*"],
     port=MODEL_PORT,
+    secrets=[
+        fl.Secret(key="UPSTASH_PASSWORD", env_var="PASSWORD"),
+    ],
     inputs=[
-        Input(name="stash", value=artifact, download=True),
+        Input(name="stash", value=artifact, download=True, env_var="STASH_FILENAME"),
         Input(name="connection", value=CONNECTION, env_var="CONNECTION"),
         Input(name="port", value=str(MODEL_PORT), env_var="MODEL_PORT"),
         Input(name="max_batch_size", value=str(MAX_BATCH_SIZE), env_var="MAX_BATCH_SIZE"),
@@ -32,4 +34,5 @@ model = App(
     ],
     limits=fl.Resources(cpu="4", mem="16Gi"),
     args=["python", "windmark/inference/serve.py"],
+    include=["windmark/*"],
 )

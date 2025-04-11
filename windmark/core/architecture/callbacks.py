@@ -11,7 +11,7 @@ from lightning.pytorch import callbacks
 import polars as pl
 import torch
 
-from core.constructs.packages import SupervisedData
+from windmark.core.constructs.packages import SupervisedData
 
 
 class ParquetBatchWriter(callbacks.BasePredictionWriter):

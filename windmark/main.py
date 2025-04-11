@@ -3,9 +3,9 @@
 import hydra
 import union
 
-from core.constructs.general import Hyperparameters
-from core.constructs.managers import StructureManager
-from workflows.train import train
+from windmark.core.constructs.general import Hyperparameters
+from windmark.core.constructs.managers import StructureManager
+from windmark.workflows.train import train
 
 EXECUTE_LOCALLY = False
 
@@ -13,7 +13,9 @@ EXECUTE_LOCALLY = False
 @hydra.main(version_base=None, config_path="config", config_name="config")
 def windmark(config) -> None:
     remote = union.UnionRemote.for_endpoint(
-        endpoint="demo.hosted.unionai.cloud", default_domain="development", default_project="windmark"
+        endpoint="demo.hosted.unionai.cloud",
+        default_domain="development",
+        default_project="windmark"
     )
 
     inputs = dict(

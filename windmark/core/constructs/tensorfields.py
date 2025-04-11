@@ -15,10 +15,10 @@ from tensordict import tensorclass
 from pytdigest import TDigest
 from torch.nn.functional import pad
 
-from core.constructs.general import Hyperparameters, Tokens, FieldRequest, FieldType
-from core.architecture.custom import smoothen
-from core.constructs.managers import SystemManager
-from core.dev.interface import TargetField, TensorField, FieldInterface
+from windmark.core.constructs.general import Hyperparameters, Tokens, FieldRequest, FieldType
+from windmark.core.architecture.custom import smoothen
+from windmark.core.constructs.managers import SystemManager
+from windmark.core.dev.interface import TargetField, TensorField, FieldInterface
 
 
 @FieldInterface.register(FieldType.Categories)

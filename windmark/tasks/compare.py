@@ -4,9 +4,9 @@ from pathlib import Path
 
 import flytekit as fl
 
-from core.constructs.general import FieldRequest
-from core.data.processors import multithread, compare
-from orchestration import environments
+from windmark.core.constructs.general import FieldRequest
+from windmark.core.data.processors import multithread, compare
+from windmark.orchestration import environments
 
 # FIXME this should be extended to include other validation checks
 

@@ -3,7 +3,6 @@
 import math
 import functools
 
-import flytekit as fl
 import numpy as np
 from rich.console import Console, Group
 from rich.table import Table
@@ -11,7 +10,7 @@ from rich.panel import Panel
 from pytdigest import TDigest
 
 import pydantic
-from core.constructs.general import Centroid, LevelSet, FieldRequest, Hyperparameters
+from windmark.core.constructs.general import Centroid, LevelSet, FieldRequest
 
 
 class StructureManager(pydantic.BaseModel):
@@ -537,10 +536,3 @@ class SystemManager(pydantic.BaseModel):
 
         for presenter in presenters:
             presenter.show()
-
-
-class StashManager(pydantic.BaseModel):
-    label: str
-    checkpoint: fl.FlyteFile
-    manager: SystemManager
-    params: Hyperparameters

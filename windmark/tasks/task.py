@@ -6,9 +6,9 @@ from functools import reduce
 
 import flytekit as fl
 
-from core.constructs.managers import StructureManager, SupervisedTaskManager, BalanceManager
-from core.data.processors import multithread, count
-from orchestration import environments
+from windmark.core.constructs.managers import StructureManager, SupervisedTaskManager, BalanceManager
+from windmark.core.data.processors import multithread, count
+from windmark.orchestration import environments
 
 
 @environments.proc

@@ -7,9 +7,9 @@ from pytdigest import TDigest
 import numpy as np
 import flytekit as fl
 
-from core.constructs.general import Centroid, FieldRequest, FieldType
-from core.data.processors import multithread, digest
-from orchestration import environments
+from windmark.core.constructs.general import Centroid, FieldRequest, FieldType
+from windmark.core.data.processors import multithread, digest
+from windmark.orchestration import environments
 
 
 @environments.proc

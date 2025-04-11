@@ -9,8 +9,6 @@ from kubernetes.client.models import (
     V1VolumeMount,
 )
 
-from orchestration.context import Environment
-
 NAME = "windmark"
 
 image = fl.ImageSpec(
@@ -28,7 +26,7 @@ attach_shm = fl.PodTemplate(
     ),
 )
 
-lite = Environment(
+lite = fl.Environment(
     container_image=image,
     requests=fl.Resources(mem="2Gi"),
     retries=3,

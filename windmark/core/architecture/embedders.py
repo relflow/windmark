@@ -6,11 +6,11 @@ import torch
 from beartype import beartype
 from jaxtyping import Float, jaxtyped
 
-from core.constructs.general import Hyperparameters, Tokens, FieldRequest, FieldType
-from core.constructs.tensorfields import FieldInterface
-from core.constructs.managers import SystemManager
-from core.dev.interface import FieldEmbedder, TensorField
-from core.architecture.custom import validate, jitter
+from windmark.core.constructs.general import Hyperparameters, Tokens, FieldRequest, FieldType
+from windmark.core.constructs.tensorfields import FieldInterface
+from windmark.core.constructs.managers import SystemManager
+from windmark.core.dev.interface import FieldEmbedder, TensorField
+from windmark.core.architecture.custom import validate, jitter
 
 
 @FieldInterface.register(FieldType.Categories)

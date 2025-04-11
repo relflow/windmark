@@ -11,8 +11,8 @@ from torch.optim.lr_scheduler import _LRScheduler
 from beartype import beartype
 from jaxtyping import Float, Int, jaxtyped
 
-from core.constructs.general import Tokens
-from core.dev.interface import TensorField
+from windmark.core.constructs.general import Tokens
+from windmark.core.dev.interface import TensorField
 
 
 @jaxtyped(typechecker=beartype)

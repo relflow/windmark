@@ -11,11 +11,11 @@ from lightning.pytorch.callbacks import (
 )
 from lightning.pytorch.loggers import NeptuneLogger
 
-from core.architecture.encoders import SequenceModule
-from core.architecture.callbacks import FrozenPretraining
-from core.constructs.managers import SystemManager
-from core.constructs.general import Hyperparameters
-from orchestration import environments
+from windmark.core.architecture.encoders import SequenceModule
+from windmark.core.architecture.callbacks import FrozenPretraining
+from windmark.core.constructs.managers import SystemManager
+from windmark.core.constructs.general import Hyperparameters
+from windmark.orchestration import environments
 
 
 @environments.lab

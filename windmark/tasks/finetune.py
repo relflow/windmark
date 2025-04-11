@@ -6,11 +6,11 @@ from lightning.pytorch import Trainer
 from lightning.pytorch.callbacks import EarlyStopping, ModelCheckpoint, RichProgressBar
 from lightning.pytorch.loggers import NeptuneLogger
 
-from core.architecture.encoders import SequenceModule
-from core.constructs.managers import SystemManager
-from core.constructs.general import Hyperparameters
-from core.architecture.callbacks import ThawedFinetuning
-from orchestration import environments
+from windmark.core.architecture.encoders import SequenceModule
+from windmark.core.constructs.managers import SystemManager
+from windmark.core.constructs.general import Hyperparameters
+from windmark.core.architecture.callbacks import ThawedFinetuning
+from windmark.orchestration import environments
 
 
 @environments.lab

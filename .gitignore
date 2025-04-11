@@ -160,11 +160,8 @@ checkpoints/*
 
 # *.zip
 
-
 _dist/
 outputs
-
-wandb/
 
 stash/*.json
 

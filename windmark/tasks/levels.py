@@ -6,10 +6,10 @@ from functools import reduce
 
 import flytekit as fl
 
-from core.constructs.managers import LevelSet
-from core.dev.interface import FieldRequest, FieldType
-from core.data.processors import multithread, count
-from orchestration import environments
+from windmark.core.constructs.managers import LevelSet
+from windmark.core.dev.interface import FieldRequest, FieldType
+from windmark.core.data.processors import multithread, count
+from windmark.orchestration import environments
 
 
 @environments.proc

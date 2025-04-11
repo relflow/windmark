@@ -13,7 +13,7 @@ import aiohttp
 from hydra import compose, initialize
 import polars as pl
 
-from core.constructs.managers import StructureManager
+from windmark.core.constructs.managers import StructureManager
 
 
 class Request(TypedDict):

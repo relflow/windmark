@@ -1,8 +1,8 @@
 # Copyright Grantham Taylor.
 
-from orchestration import environments
-from core.constructs.general import Centroid, LevelSet
-from core.constructs.managers import (
+from windmark.orchestration import environments
+from windmark.core.constructs.general import Centroid, LevelSet
+from windmark.core.constructs.managers import (
     StructureManager,
     SupervisedTaskManager,
     SampleManager,

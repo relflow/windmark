@@ -18,13 +18,13 @@ from torch.utils.data import DataLoader
 from torch.utils.data.datapipes.iter.combinatorics import ShufflerIterDataPipe as Shuffle
 
 
-from core.data.operators import collate, mock, SequenceDataset
-from core.constructs.managers import SystemManager
-from core.constructs.tensorfields import TargetField
-from core.constructs.general import Hyperparameters
-from core.constructs.packages import PretrainingData, SupervisedData, OutputData, SequenceData
-from core.architecture.embedders import FieldInterface
-from core.architecture.custom import LinearWarmupCosineAnnealingLR
+from windmark.core.data.operators import collate, mock, SequenceDataset
+from windmark.core.constructs.managers import SystemManager
+from windmark.core.constructs.tensorfields import TargetField
+from windmark.core.constructs.general import Hyperparameters
+from windmark.core.constructs.packages import PretrainingData, SupervisedData, OutputData, SequenceData
+from windmark.core.architecture.embedders import FieldInterface
+from windmark.core.architecture.custom import LinearWarmupCosineAnnealingLR
 
 
 class LearnedTensor(torch.nn.Module):

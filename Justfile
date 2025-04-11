@@ -48,4 +48,4 @@ serve:
 # run model training in debug mode
 debug: && clean
   @echo "JUST debugging model training workflow"
-  @uv run windmark data=debug model=debug
+  @uv run windmark/main.py data=debug model=debug

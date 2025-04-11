@@ -5,10 +5,10 @@ import json
 
 import flytekit as fl
 
-from core.constructs.general import Hyperparameters
-from core.constructs.managers import SystemManager, StashManager
-from orchestration.artifact import StashArtifact
-from orchestration import environments
+from windmark.core.constructs.general import Hyperparameters
+from windmark.core.constructs.managers import SystemManager
+from windmark.orchestration.artifact import StashArtifact, StashManager
+from windmark.orchestration import environments
 
 # TODO also add model results
 
@@ -29,8 +29,6 @@ def stash_model_state(
         params (Hyperparameters): The hyperparameters for pretraining.
         label (str): The name for the experiment.
     """
-
-    checkpoint.download()
 
     stash = StashManager(checkpoint=checkpoint, manager=manager, params=params, label=label)
 

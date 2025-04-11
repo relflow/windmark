@@ -1,9 +1,9 @@
 # Copyright Grantham Taylor.
 
-from core.constructs.general import FieldRequest
-from core.constructs.managers import StructureManager
+from windmark.core.constructs.general import FieldRequest
+from windmark.core.constructs.managers import StructureManager
 
-from orchestration import environments
+from windmark.orchestration import environments
 
 
 # FIXME this should be simplified by flytekit soon

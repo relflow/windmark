@@ -10,12 +10,12 @@ import msgspec
 import torch
 from tensordict import TensorDict
 
-from core.constructs.managers import SystemManager
-from core.constructs.general import Hyperparameters
-from core.architecture.embedders import FieldInterface
-from core.constructs.packages import SupervisedData, PretrainingData, SequenceData
+from windmark.core.constructs.managers import SystemManager
+from windmark.core.constructs.general import Hyperparameters
+from windmark.core.architecture.embedders import FieldInterface
+from windmark.core.constructs.packages import SupervisedData, PretrainingData, SequenceData
 
-from core.data.samplers import Sampler, sample as sample_fn
+from windmark.core.data.samplers import Sampler, sample as sample_fn
 
 
 AnnotationType: TypeAlias = tuple[str, str, int]
